@@ -78,7 +78,7 @@ public class Loader {
 		final int Y = 1;
 		int tempMatrix[][] = new int[numCities][numCities];
 		String tempStr = "";
-		double x, y = 0.0;
+//		double x, y = 0.0;
 		int counter = 0;
 		double coords[][] = new double[numCities][2];
 		int dist = 0;
@@ -98,8 +98,8 @@ public class Loader {
 			for (int i = j; i < coords.length; i++) {
 				dist = (int) Math.floor(.5 + Math.sqrt(
 
-				Math.pow(coords[i][X] + coords[j][X], 2.0)
-						+ Math.pow(coords[i][Y] + coords[j][Y], 2.0))); // TODO . por +
+				Math.pow(coords[i][X] - coords[j][X], 2.0)
+						+ Math.pow(coords[i][Y] - coords[j][Y], 2.0))); // TODO . por +
 
 				tempMatrix[i][j] = dist;
 				tempMatrix[j][i] = dist;
