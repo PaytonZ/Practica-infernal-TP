@@ -20,6 +20,7 @@ public class SimpleACS {
 
 	public static void main(String args[]) {
 		Loader l = new Loader();
+		@SuppressWarnings("unused")
 		SimpleACS main = new SimpleACS(l.loadData("eil51.tsp"));
 	}
 

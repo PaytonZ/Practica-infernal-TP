@@ -35,7 +35,7 @@ public class Loader {
 				strTok.nextToken();
 				tempStr = strTok.nextToken();
 				return Integer.parseInt(tempStr);
-			} else if (tempStr.equals("DIMENSION: ")) {
+			} else if (tempStr.equals("DIMENSION:")) {
 				tempStr = strTok.nextToken();
 				return Integer.parseInt(tempStr);
 			}
@@ -59,7 +59,7 @@ public class Loader {
 					return buildDistMatrixEUC2D(new StringTokenizer(workStr,
 							"\n\t\r\f"));
 				}
-			} else if (tempStr.equals("EDGE WEIGHT TYPE: ")) {
+			} else if (tempStr.equals("EDGE WEIGHT TYPE:")) {
 				tempStr = strTok.nextToken();
 				edgeWeightType = tempStr;
 				if (edgeWeightType.equals("EXPLICIT")) {
