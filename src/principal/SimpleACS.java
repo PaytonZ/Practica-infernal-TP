@@ -116,7 +116,7 @@ public class SimpleACS {
 			for (int j = 0; j < CITIES; j++)
 				weights[j] = tabu[j] ? 0 :
 
-			pheromones[last][j] + visibility[last][j]; // TODO . por +
+			pheromones[last][j] - visibility[last][j]; // TODO . por +
 			
 			q = random.nextDouble();
 			next = 0;
