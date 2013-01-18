@@ -9,7 +9,7 @@ public class SimpleACS {
 	static final int M = 2, TMAX = 50000;
 	static final Random random = new Random();
 
-	int CITIES;
+	int CITIES; // Cantidad de ciudades a visitar.
 	double TAUZERO;
 	int distances[][];
 	double visibility[][];
@@ -172,7 +172,7 @@ public class SimpleACS {
 				}
 			}
 
-			if (tabu[next]) {
+			if (tabu[next]==true) {
 				System.out.println("TABU\n" + next);
 				System.exit(0);
 			}
@@ -195,8 +195,9 @@ public class SimpleACS {
 	int computeLength(int tour[]) {
 		int length = 0;
 
-		for (int i = 0; i < CITIES; i++)
+		for (int i = 0; i < CITIES; i++) {
 			length += distances[tour[i]][tour[i + 1]];
+		}
 
 		return length;
 	}
