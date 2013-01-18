@@ -41,6 +41,7 @@ public class Loader {
 	
 	private int getNumberOfCities(StringTokenizer strTok) {
 		String tempStr = "";
+	
 		while (true) {
 			tempStr = strTok.nextToken();
 			if (tempStr.equals("DIMENSION")) {

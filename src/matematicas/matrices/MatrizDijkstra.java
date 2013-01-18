@@ -9,8 +9,9 @@ public class MatrizDijkstra {
 	public int[][] coustruirMatrizDijkstra(StringTokenizer contenidodelficherocontokens, int numerodeciudades) {
 		String cadenaleida = "";
 		String edgeWeightType = "UNKNOWN";
+		int resultado[][]={};
 
-		while (true) {
+		//while (true) {
 			
 			cadenaleida = contenidodelficherocontokens.nextToken();
 			
@@ -21,11 +22,11 @@ public class MatrizDijkstra {
 				
 				if (edgeWeightType.equals("EXPLICIT")) {
 					
-					return buildDistMatrixEXPLICIT(contenidodelficherocontokens, numerodeciudades);
+					resultado=buildDistMatrixEXPLICIT(contenidodelficherocontokens, numerodeciudades);
 					
 				} else {
 					
-					return coustruirMatrizDijkstraCalculoDistanciaEuclides(contenidodelficherocontokens, numerodeciudades);
+					resultado=construirMatrizDijkstraCalculoDistanciaEuclides(contenidodelficherocontokens, numerodeciudades);
 				}
 				
 			} else if (cadenaleida.equals("EDGE WEIGHT TYPE:")) {
@@ -34,17 +35,19 @@ public class MatrizDijkstra {
 				
 				if (edgeWeightType.equals("EXPLICIT")) {
 					
-					return buildDistMatrixEXPLICIT(contenidodelficherocontokens, numerodeciudades);
+					resultado=buildDistMatrixEXPLICIT(contenidodelficherocontokens, numerodeciudades);
 					
 				} else {
 					
-					return coustruirMatrizDijkstraCalculoDistanciaEuclides(contenidodelficherocontokens, numerodeciudades);
+					resultado=construirMatrizDijkstraCalculoDistanciaEuclides(contenidodelficherocontokens, numerodeciudades);
 				}
 			}
-		}
+			
+			return resultado;
+		//}
 	}
 
-	private int[][] coustruirMatrizDijkstraCalculoDistanciaEuclides(StringTokenizer strTok, int numerodeciudades) {
+	private int[][] construirMatrizDijkstraCalculoDistanciaEuclides(StringTokenizer strTok, int numerodeciudades) {
 		
 		double coordenadas[][] = new double[numerodeciudades][2];
 		final int indiceprimeracoordenada = 0;
