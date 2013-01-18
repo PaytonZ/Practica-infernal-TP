@@ -14,8 +14,9 @@ public class SimpleACS {
 	int distances[][];
 	double visibility[][];
 	double pheromones[][];
-	int bestTour[];
-	int bestLength = Integer.MAX_VALUE;
+	int bestTour[]; // Mejor ruta hasta el momento
+	int bestLength = Integer.MAX_VALUE; // Longitud de la mejor ruta hasta el
+										// momento
 	boolean tabu[]; // Lista de ciudades que la hormiga tiene que visitar para
 					// realizar un tour.
 
@@ -130,10 +131,16 @@ public class SimpleACS {
 		tabu[last] = true;
 
 		for (int i = 1; i < CITIES; i++) {
-			for (int j = 0; j < CITIES; j++)
-				weights[j] = tabu[j] ? 0 : pheromones[last][j]
-						+ visibility[last][j]; // TODO . por +
+			for (int j = 0; j < CITIES; j++) {
 
+				// weights[j] = tabu[j] ? 0 : pheromones[last][j]+
+				// visibility[last][j]; // TODO . por +
+				if (tabu[j] == true) {
+					weights[j] = 0;
+				} else {
+					weights[j] = pheromones[last][j] + visibility[last][j];
+				}
+			}
 			q = random.nextDouble();
 			next = 0;
 

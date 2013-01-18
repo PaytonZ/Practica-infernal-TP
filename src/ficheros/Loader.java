@@ -14,34 +14,38 @@ public class Loader {
 		StringTokenizer contenidoficherocontokens;
 		if (path != null) {
 			BufferedReader reader;
-			
+
 			try {
 				reader = new BufferedReader(new FileReader(path));
 				while (reader.ready())
 					workStr += reader.readLine() + "\n";
-				
+
 			} catch (FileNotFoundException e) {
 				System.err.println(e + "\nArchivo no encontrado."
 						+ "Escriba el nuevo nombre de archivo y por área.");
-				
+
 			} catch (IOException e) {
-				System.err.println(e + "\nError de hardware durante la lectura."
+				System.err.println(e
+						+ "\nError de hardware durante la lectura."
 						+ "Introduzca el nuevo nombre de archivo y por área.");
 			}
 		}
-		
+
 		contenidoficherocontokens = new StringTokenizer(workStr, "\n\t\r\f");
-		
+
 		numCities = getNumberOfCities(contenidoficherocontokens);
-		
+
 		MatrizDijkstra matriz = new MatrizDijkstra();
-		
-		return matriz.coustruirMatrizDijkstra(contenidoficherocontokens, numCities);
+
+		return matriz.construirMatrizDijkstra(contenidoficherocontokens,
+				numCities);
 	}
-	
+
+	// Juan: No soy capaz de hacerlo pasar a un unico return. Cuando lo intento
+	// me da un runtimeerror de outofbounds de tabu[0]
 	private int getNumberOfCities(StringTokenizer strTok) {
 		String tempStr = "";
-	
+
 		while (true) {
 			tempStr = strTok.nextToken();
 			if (tempStr.equals("DIMENSION")) {
