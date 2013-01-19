@@ -49,7 +49,7 @@ public class Loader {
 	/**
 	 * Metodo que busca el numero de ciudades en el string y lo devuelve
 	 * 
-	 * @param Un StringTokenizer con el contenido del fichero
+	 * @param strTok Un StringTokenizer con el contenido del fichero
 	 * @return El numero de ciudades en forma de entero
 	 */
 	private int getNumberOfCities(StringTokenizer strTok) {
