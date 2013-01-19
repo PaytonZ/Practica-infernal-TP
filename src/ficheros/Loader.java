@@ -7,11 +7,16 @@ import matematicas.matrices.MatrizDijkstra;
 
 public class Loader {
 
-	int numCities = 0;
-	String workStr = "";
+	int numCities = 0; //Numero de ciudades que hay.
+	String workStr = ""; //String con el contenido del fichero.
 
+	/**
+	 * @param path
+	 * @return Devuelve una matriz de Dijstra con el contenido del fichero y el numero de ciudads
+	 */
 	public int[][] loadData(String path) {
 		StringTokenizer contenidoficherocontokens;
+		
 		if (path != null) {
 			BufferedReader reader;
 
@@ -41,21 +46,48 @@ public class Loader {
 				numCities);
 	}
 
-	// Juan: No soy capaz de hacerlo pasar a un unico return. Cuando lo intento
-	// me da un runtimeerror de outofbounds de tabu[0]
+	/**
+	 * Metodo que busca el numero de ciudades en el string y lo devuelve
+	 * 
+	 * @param Un StringTokenizer con el contenido del fichero
+	 * @return El numero de ciudades en forma de entero
+	 */
 	private int getNumberOfCities(StringTokenizer strTok) {
+		
 		String tempStr = "";
-
-		while (true) {
+		boolean encontradoNumeroCiudades = false;
+		
+		while (encontradoNumeroCiudades == false) {
 			tempStr = strTok.nextToken();
+			
 			if (tempStr.equals("DIMENSION")) {
 				strTok.nextToken();
 				tempStr = strTok.nextToken();
-				return Integer.parseInt(tempStr);
-			} else if (tempStr.equals("DIMENSION:")) {
+				encontradoNumeroCiudades = true;
+				
+			} 
+			
+			else if (tempStr.equals("DIMENSION:")) {
 				tempStr = strTok.nextToken();
-				return Integer.parseInt(tempStr);
+				encontradoNumeroCiudades = true;
 			}
 		}
+		return Integer.parseInt(tempStr);
 	}
+	
+//	private int getNumberOfCities(StringTokenizer strTok) {
+//		String tempStr = "";
+//
+//		while (true) {
+//			tempStr = strTok.nextToken();
+//			if (tempStr.equals("DIMENSION")) {
+//				strTok.nextToken();
+//				tempStr = strTok.nextToken();
+//				return Integer.parseInt(tempStr);
+//			} else if (tempStr.equals("DIMENSION:")) {
+//				tempStr = strTok.nextToken();
+//				return Integer.parseInt(tempStr);
+//			}
+//		}
+//	}
 }
