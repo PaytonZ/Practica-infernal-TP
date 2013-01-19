@@ -11,7 +11,9 @@ public class Loader {
 	String workStr = ""; //String con el contenido del fichero.
 
 	/**
-	 * @param path
+	 * Carga la información sobre el problema desde un fichero.
+	 * 
+	 * @param path Ruta del fichero a leer
 	 * @return Devuelve una matriz de Dijstra con el contenido del fichero y el numero de ciudads
 	 */
 	public int[][] loadData(String path) {
@@ -74,20 +76,4 @@ public class Loader {
 		}
 		return Integer.parseInt(tempStr);
 	}
-	
-//	private int getNumberOfCities(StringTokenizer strTok) {
-//		String tempStr = "";
-//
-//		while (true) {
-//			tempStr = strTok.nextToken();
-//			if (tempStr.equals("DIMENSION")) {
-//				strTok.nextToken();
-//				tempStr = strTok.nextToken();
-//				return Integer.parseInt(tempStr);
-//			} else if (tempStr.equals("DIMENSION:")) {
-//				tempStr = strTok.nextToken();
-//				return Integer.parseInt(tempStr);
-//			}
-//		}
-//	}
 }
