@@ -22,7 +22,7 @@ public class SimpleACS {
 
 	public static void main(String args[]) {
 		Loader l = new Loader();
-		String fichero_a_abrir = "test.tsp";
+		String fichero_a_abrir = "eil51.tsp";
 		SimpleACS main = new SimpleACS(l.loadData(fichero_a_abrir));
 
 		main.initialize();
