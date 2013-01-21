@@ -126,7 +126,7 @@ public class SimpleACS {
 		bestLength = calcularlongitudtour(NNTour);
 
 		TAUZERO = 1.0 / (CITIES - bestLength);
-
+		
 		System.out.println("NN = " + bestLength);
 	}
 	
