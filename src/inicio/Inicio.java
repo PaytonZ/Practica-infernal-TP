@@ -8,12 +8,6 @@ import java.util.StringTokenizer;
 
 public class Inicio {
 
-	// Numero de ciudades que hay.
-	int numerodeciudades = 0;
-	
-	// String con el contenido del fichero.
-//	String workStr = ""; 
-
 	/**
 	 * Carga la información sobre el problema desde un fichero.
 	 * 
@@ -47,6 +41,12 @@ public class Inicio {
 		return new StringTokenizer(contenidoficherocontokens, "\n\t\r\f");
 	}
 	
+	/**
+	 * Gerera la matriz a partir del contenido del fichero.
+	 * 
+	 * @param contenidoFicheroCargado
+	 * @return
+	 */
 	public int[][] generarMatriz(StringTokenizer contenidoFicheroCargado) {
 		
 		int numerodeciudades = obtenerNumeroDeCiudades(contenidoFicheroCargado);
@@ -55,7 +55,7 @@ public class Inicio {
 	}
 
 	/**
-	 * Metodo que busca el numero de ciudades en el string y lo devuelve
+	 * Método que busca el numero de ciudades en el string y lo devuelve
 	 * 
 	 * @param strTok Un StringTokenizer con el contenido del fichero
 	 * @return El numero de ciudades en forma de entero
@@ -72,7 +72,6 @@ public class Inicio {
 				strTok.nextToken();
 				tempStr = strTok.nextToken();
 				encontradoNumeroCiudades = true;
-
 			}
 
 			else if (tempStr.equals("DIMENSION:")) {
@@ -80,6 +79,7 @@ public class Inicio {
 				encontradoNumeroCiudades = true;
 			}
 		}
+		
 		return Integer.parseInt(tempStr);
 	}
 
@@ -135,15 +135,12 @@ public class Inicio {
 	}
 
 	/**
-	 * Metodo que mira las posiciones de las ciudades y crea una matriz con las
+	 * Método que mira las posiciones de las ciudades y crea una matriz con las
 	 * distancias entre ellas.
 	 * 
-	 * @param coordenadas
-	 *            Cordenadas de las ciudades.
-	 * @param numerodeciudades
-	 *            El numero de ciudades que hay.
-	 * @return Devuelve una matriz con las distancias que hay entre las
-	 *         ciudades.
+	 * @param coordenadas Cordenadas de las ciudades.
+	 * @param numerodeciudades El numero de ciudades que hay.
+	 * @return Devuelve una matriz con las distancias que hay entre las ciudades.
 	 */
 	public int[][] calculoDistanciaPorEuclides(double[][] coordenadas, int numerodeciudades) {
 
@@ -156,14 +153,10 @@ public class Inicio {
 		for (int j = 0; j < coordenadas.length; j++) {
 			for (int i = j; i < coordenadas.length; i++) {
 				dist = (int) Math
-						.floor(.5 + Math.sqrt(Math
-								.pow(coordenadas[i][indiceprimeracoordenada]
-										- coordenadas[j][indiceprimeracoordenada],
-										2.0)
-								+ Math.pow(
-										coordenadas[i][indicesegundacoordenada]
-												- coordenadas[j][indicesegundacoordenada],
-										2.0)));
+						.floor(.5 + Math.sqrt(Math.pow(coordenadas[i][indiceprimeracoordenada]
+										- coordenadas[j][indiceprimeracoordenada], 2.0)
+								+ Math.pow(coordenadas[i][indicesegundacoordenada]
+												- coordenadas[j][indicesegundacoordenada], 2.0)));
 
 				matrizDistancias[i][j] = dist;
 				matrizDistancias[j][i] = dist;
@@ -214,14 +207,13 @@ public class Inicio {
 	}
 	
 	/**
-	 * 
+	 * Este método genera una matriz explicita.
 	 * 
 	 * @param strTok
 	 * @param numerodeciudades
-	 * @return
+	 * @return La matriz construida
 	 */
-	private int[][] construirMatrizExplicita(StringTokenizer strTok,
-			int numerodeciudades) {
+	private int[][] construirMatrizExplicita(StringTokenizer strTok, int numerodeciudades) {
 
 		int matrizAuxiliar[][] = new int[numerodeciudades][numerodeciudades];
 
@@ -248,19 +240,15 @@ public class Inicio {
 					}
 					if (cadenaleida.equals("0")) {
 
-						matrizAuxiliar[countI][countJ] = Integer
-								.parseInt(cadenaleida);
-						matrizAuxiliar[countJ][countI] = Integer
-								.parseInt(cadenaleida);
+						matrizAuxiliar[countI][countJ] = Integer.parseInt(cadenaleida);
+						matrizAuxiliar[countJ][countI] = Integer.parseInt(cadenaleida);
 
 						countI++;
 						countJ = 0;
 					} else {
 
-						matrizAuxiliar[countI][countJ] = Integer
-								.parseInt(cadenaleida);
-						matrizAuxiliar[countJ][countI] = Integer
-								.parseInt(cadenaleida);
+						matrizAuxiliar[countI][countJ] = Integer.parseInt(cadenaleida);
+						matrizAuxiliar[countJ][countI] = Integer.parseInt(cadenaleida);
 
 						countJ++;
 					}

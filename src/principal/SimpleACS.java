@@ -55,13 +55,13 @@ public class SimpleACS {
 		// Se contruyen las matrices necesarias a partir del número de ciudades
 		bestTour = new int[CITIES];
 		visitadas = new boolean[CITIES];
-	}
-
-	public void ejecutar() {
 
 		generarTour();
 		inicioFeromonasYvisibilidad();
+	}
 
+	public void ejecutar() {
+		
 		costruirNuevoTour();
 	}
 	
@@ -69,6 +69,7 @@ public class SimpleACS {
 	 * Método que se ejecuta cuando finaliza todo el proceso del sistema y se va a mostrar la salida de datos.
 	 */
 	public void finalizar() {
+		
 		System.out.println(bestLength);
 
 		for (int i = 0; i < CITIES + 1; i++) {
