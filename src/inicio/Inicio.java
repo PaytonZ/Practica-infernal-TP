@@ -21,7 +21,7 @@ public class Inicio {
 	 * @return Devuelve una matriz de Dijstra con el contenido del fichero y el
 	 *         numero de ciudads
 	 */
-	public int[][] cargarFichero(String path) {
+	public int[][] cargarFicheroyGenerarMatriz(String path) {
 		
 		StringTokenizer contenidoficherocontokens;
 

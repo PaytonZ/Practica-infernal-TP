@@ -4,27 +4,27 @@ import inicio.Inicio;
 
 import java.util.Random;
 
-
-
 public class SimpleACS {
-	static final double BETA = 2, GAMMA = 0.1, qZERO = 0.9, Q = 1.0; // Variables cuyo significado se desconoce. Aparecen en la linea
-	//
+	
+	static final double BETA = 2, GAMMA = 0.1, qZERO = 0.9, Q = 1.0; // Variables de cuyo significado se desconoce.
 	static final int M = 2, TMAX = 50000;
 	static final Random random = new Random();
 
 	int CITIES; // Cantidad de ciudades a visitar.
-	double TAUZERO;  // Variables cuyo significado se desconoce.
+	double TAUZERO; // Variables cuyo significado se desconoce.
 	int distances[][];
 	double visibility[][];
 	double pheromones[][];
 	int bestTour[]; // Mejor ruta hasta el momento
 	int bestLength = Integer.MAX_VALUE; // Longitud de la mejor ruta hasta el
 										// momento
-	boolean visitadas[]; // Lista de ciudades que la hormiga tiene que visitar para
-					// realizar un tour.
+	boolean visitadas[]; // Lista de ciudades que la hormiga tiene que visitar
+							// para
+
+	// realizar un tour.
 
 	public static void main(String args[]) {
-		
+
 		String ficheroaabrir = "eil51.tsp";
 		SimpleACS main = new SimpleACS();
 
@@ -36,11 +36,54 @@ public class SimpleACS {
 
 	public SimpleACS() {
 
-				
 	}
-	
-	public void generarTour()
-	{
+/**
+ * En este método se realizan las siguientes funcionalidades de la aplicación
+ * 1- Se abre el fichero y se genera , segun la entrada del mismo , una matriz para poder trabajar con ella.
+ * 2- Se inician variables como el numero de ciudades , la mejor ruta , y las ciudades visitadas.
+ * 3- Se genera un tour inicial basandose en la proximidad de las ciudades
+ * 4- Se inician las feromonas y las visibilidad
+ * 5- El metodo ha dejado todas las variables listas para poder proceder al metodo ejecuta
+ * @param ficheroaabrir
+ */
+	public void iniciar(String ficheroaabrir) {
+
+		Inicio in = new Inicio();
+		this.distances = in.cargarFicheroyGenerarMatriz(ficheroaabrir);
+
+		CITIES = distances.length;
+
+		bestTour = new int[CITIES];
+		visitadas = new boolean[CITIES];
+
+		generarTour();
+		inicioFeromonasYvisibilidad();
+
+	}
+
+	/**
+	 * En esta funcion se inicializan las feromonas al valor TAUZERO y la
+	 * visibilidad se inicia al valor de las distancias elevado a un cierto
+	 * valor BETA
+	 */
+	public void inicioFeromonasYvisibilidad() {
+
+		for (int i = 0; i < CITIES; i++) {
+			for (int j = 0; j < CITIES; j++) {
+				pheromones[i][j] = TAUZERO;
+			}
+		}
+
+		for (int i = 0; i < CITIES; i++) {
+			for (int j = 0; j < CITIES; j++) {
+				visibility[i][j] = Math.pow(distances[i][j], BETA);
+			}
+		}
+	}
+/**
+ * Se genera una ruta inicial basandose en la proximidad de unas ciudades con otras ( ruta no óptima )
+ */
+	public void generarTour() {
 		int NNTour[] = new int[CITIES + 1];
 		pheromones = new double[CITIES][CITIES];
 		visibility = new double[CITIES][CITIES];
@@ -52,7 +95,8 @@ public class SimpleACS {
 			int mascercano = 0;
 
 			for (int j = 0; j < CITIES; j++)
-				if (!visitadas[j] && (mascercano == 0 || distances[NNTour[i]][j] < distances[i][mascercano]))
+				if (!visitadas[j]
+						&& (mascercano == 0 || distances[NNTour[i]][j] < distances[i][mascercano]))
 					mascercano = j;
 
 			NNTour[i] = mascercano;
@@ -68,41 +112,6 @@ public class SimpleACS {
 		System.out.println("NN = " + bestLength);
 	}
 
-	public void iniciar(String ficheroaabrir) {
-		
-		Inicio in= new Inicio();
-		this.distances = in.cargarFichero(ficheroaabrir);
-		
-		CITIES = distances.length;
-
-		bestTour = new int[CITIES];
-		visitadas = new boolean[CITIES];
-
-		
-		generarTour();
-		inicioFeromonasYvisibilidad();
-
-		
-	}
-	/**
-	 * En esta funcion se inicializan las feromonas al valor TAUZERO 
-	 * y la visibilidad se inicia al valor de las distancias elevado a un cierto valor BETA
-	 */
-	public void inicioFeromonasYvisibilidad(){
-		
-		for (int i = 0; i < CITIES; i++) {
-			for (int j = 0; j < CITIES; j++) {
-				pheromones[i][j] = TAUZERO;
-			}
-		}
-
-		for (int i = 0; i < CITIES; i++) {
-			for (int j = 0; j < CITIES; j++) {
-				visibility[i][j] = Math.pow(distances[i][j], BETA);
-			}
-		}
-	}
-	
 	public void ejecutar() {
 
 		for (int t = 0; t < TMAX; t++) {
@@ -111,7 +120,7 @@ public class SimpleACS {
 			}
 
 			for (int k = 0; k < M; k++) {
-				buildTour();
+				construirNuevoTour();
 			}
 
 			for (int i = 0; i < CITIES; i++) {
@@ -132,7 +141,7 @@ public class SimpleACS {
 
 	}
 
-	public void buildTour() {
+	public void construirNuevoTour() {
 
 		int tempTour[] = new int[CITIES + 1];
 		int tempLength;
@@ -152,9 +161,7 @@ public class SimpleACS {
 
 		for (int i = 1; i < CITIES; i++) {
 			for (int j = 0; j < CITIES; j++) {
-
-				// weights[j] = tabu[j] ? 0 : pheromones[last][j]+
-				// visibility[last][j]; // TODO . por +
+				
 				if (visitadas[j] == true) {
 					weights[j] = 0;
 				} else {
@@ -182,17 +189,17 @@ public class SimpleACS {
 				target = random.nextDouble() * sigmaWeights;
 				tempWeight = 0;
 
-				for (int j = 0; j < CITIES; j++) {
+				for (int j = 0; j < CITIES && tempWeight < target; j++) {
 					tempWeight += weights[j];
 
-					if (tempWeight >= target) {
+				if (tempWeight >= target) {
 						siguiente = j;
-						break;
+						//break;
 					}
 				}
 			}
 
-			if (visitadas[siguiente]==true) {
+			if (visitadas[siguiente] == true) {
 				System.out.println("TABU\n" + siguiente);
 				System.exit(0);
 			}
@@ -211,7 +218,6 @@ public class SimpleACS {
 			System.out.println("Best = " + bestLength);
 		}
 	}
-	
 
 	int calcularlongitudtour(int tour[]) {
 		int length = 0;
