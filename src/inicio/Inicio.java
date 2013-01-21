@@ -8,18 +8,21 @@ import java.util.StringTokenizer;
 
 public class Inicio {
 
-	int numerodeciudades = 0; // Numero de ciudades que hay.
-	String workStr = ""; // String con el contenido del fichero.
+	// Numero de ciudades que hay.
+	int numerodeciudades = 0;
+	
+	// String con el contenido del fichero.
+	String workStr = ""; 
 
 	/**
 	 * Carga la información sobre el problema desde un fichero.
 	 * 
-	 * @param path
-	 *            Ruta del fichero a leer
+	 * @param path Ruta del fichero a leer
 	 * @return Devuelve una matriz de Dijstra con el contenido del fichero y el
 	 *         numero de ciudads
 	 */
 	public int[][] cargarFichero(String path) {
+		
 		StringTokenizer contenidoficherocontokens;
 
 		if (path != null) {
@@ -52,8 +55,7 @@ public class Inicio {
 	/**
 	 * Metodo que busca el numero de ciudades en el string y lo devuelve
 	 * 
-	 * @param strTok
-	 *            Un StringTokenizer con el contenido del fichero
+	 * @param strTok Un StringTokenizer con el contenido del fichero
 	 * @return El numero de ciudades en forma de entero
 	 */
 	private int obtenerNumeroDeCiudades(StringTokenizer strTok) {
