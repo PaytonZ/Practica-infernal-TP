@@ -114,10 +114,12 @@ public class SimpleACS {
 		for (int i = 1; i < CITIES; i++) {
 			int mascercano = 0;
 
-			for (int j = 0; j < CITIES; j++){
-				if (!visitadas[j]
-						&& (mascercano == 0 || distances[NNTour[i]][j] < distances[i][mascercano]))
-					{mascercano = j;}}
+			for (int j = 0; j < CITIES; j++) {
+				if (!visitadas[j] && (mascercano == 0 || distances[NNTour[i]][j] < distances[i][mascercano])) 
+				{
+					mascercano = j;
+				}
+			}
 
 			NNTour[i] = mascercano;
 			visitadas[mascercano] = true;
