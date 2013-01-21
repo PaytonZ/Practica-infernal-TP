@@ -12,6 +12,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ TestLoader.class, TestEuclidesDistancia.class, TestMatrizDijkstra.class})
-public class TestLuancher {
+public class TestLauncher {
 
 }
