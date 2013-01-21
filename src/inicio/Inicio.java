@@ -141,7 +141,7 @@ public class Inicio {
 
 			if (edgeWeightType.equals("EXPLICIT")) {
 
-				resultado = buildDistMatrixEXPLICIT(
+				resultado = construirMatrizExplicita(
 						contenidodelficherocontokens, numerodeciudades);
 
 			} else {
@@ -156,7 +156,7 @@ public class Inicio {
 
 			if (edgeWeightType.equals("EXPLICIT")) {
 
-				resultado = buildDistMatrixEXPLICIT(
+				resultado = construirMatrizExplicita(
 						contenidodelficherocontokens, numerodeciudades);
 
 			} else {
@@ -211,7 +211,7 @@ public class Inicio {
 		return matrizAuxiliar;
 	}
 
-	private int[][] buildDistMatrixEXPLICIT(StringTokenizer strTok,
+	private int[][] construirMatrizExplicita(StringTokenizer strTok,
 			int numerodeciudades) {
 
 		int matrizAuxiliar[][] = new int[numerodeciudades][numerodeciudades];
@@ -262,3 +262,4 @@ public class Inicio {
 		return matrizAuxiliar;
 	}
 }
+

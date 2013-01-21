@@ -13,7 +13,7 @@ public class SimpleACS {
 	static final Random random = new Random();
 
 	int CITIES; // Cantidad de ciudades a visitar.
-	double TAUZERO;
+	double TAUZERO;  // Variables cuyo significado se desconoce.
 	int distances[][];
 	double visibility[][];
 	double pheromones[][];
@@ -26,24 +26,17 @@ public class SimpleACS {
 	public static void main(String args[]) {
 		
 		String ficheroaabrir = "eil51.tsp";
-		SimpleACS main = new SimpleACS(ficheroaabrir);
+		SimpleACS main = new SimpleACS();
 
-		main.iniciar();
+		main.iniciar(ficheroaabrir);
 		main.ejecutar();
 		main.finalizar();
 
 	}
 
-	public SimpleACS(String nombredelfichero) {
+	public SimpleACS() {
 
-		Inicio i= new Inicio();
-		this.distances = i.cargarFichero(nombredelfichero);
-
-		CITIES = distances.length;
-
-		bestTour = new int[CITIES];
-		visitadas = new boolean[CITIES];
-
+				
 	}
 	
 	public void generarTour()
@@ -75,10 +68,28 @@ public class SimpleACS {
 		System.out.println("NN = " + bestLength);
 	}
 
-	public void iniciar() {
+	public void iniciar(String ficheroaabrir) {
+		
+		Inicio in= new Inicio();
+		this.distances = in.cargarFichero(ficheroaabrir);
+		
+		CITIES = distances.length;
+
+		bestTour = new int[CITIES];
+		visitadas = new boolean[CITIES];
+
 		
 		generarTour();
+		inicioFeromonasYvisibilidad();
 
+		
+	}
+	/**
+	 * En esta funcion se inicializan las feromonas al valor TAUZERO 
+	 * y la visibilidad se inicia al valor de las distancias elevado a un cierto valor BETA
+	 */
+	public void inicioFeromonasYvisibilidad(){
+		
 		for (int i = 0; i < CITIES; i++) {
 			for (int j = 0; j < CITIES; j++) {
 				pheromones[i][j] = TAUZERO;
@@ -91,7 +102,7 @@ public class SimpleACS {
 			}
 		}
 	}
-
+	
 	public void ejecutar() {
 
 		for (int t = 0; t < TMAX; t++) {
