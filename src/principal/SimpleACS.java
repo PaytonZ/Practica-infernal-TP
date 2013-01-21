@@ -82,7 +82,7 @@ public class SimpleACS {
 	/**
 	 * En este método se inicializan las feromonas al valor TAUZERO y la
 	 * visibilidad se inicia al valor de las distancias elevado a un cierto
-	 * valor BETA
+	 * valor BETA.
 	 */
 	private void inicioFeromonasYvisibilidad() {
 
@@ -100,7 +100,7 @@ public class SimpleACS {
 	}
 	
 	/**
-	 * Se genera una ruta inicial basandose en la proximidad de unas ciudades con otras ( ruta no óptima )
+	 * Se genera una ruta inicial basandose en la proximidad de unas ciudades con otras ( ruta no óptima ).
 	 */
 	public void generarTour() {
 		
