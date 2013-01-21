@@ -1,11 +1,14 @@
 package principal;
 
+import inicio.Inicio;
+
 import java.util.Random;
 
-import ficheros.Loader;
+
 
 public class SimpleACS {
-	static final double BETA = 2, GAMMA = 0.1, qZERO = 0.9, Q = 1.0;
+	static final double BETA = 2, GAMMA = 0.1, qZERO = 0.9, Q = 1.0; // Variables cuyo significado se desconoce. Aparecen en la linea
+	//
 	static final int M = 2, TMAX = 50000;
 	static final Random random = new Random();
 
@@ -17,58 +20,64 @@ public class SimpleACS {
 	int bestTour[]; // Mejor ruta hasta el momento
 	int bestLength = Integer.MAX_VALUE; // Longitud de la mejor ruta hasta el
 										// momento
-	boolean tabu[]; // Lista de ciudades que la hormiga tiene que visitar para
+	boolean visitadas[]; // Lista de ciudades que la hormiga tiene que visitar para
 					// realizar un tour.
 
 	public static void main(String args[]) {
-		Loader l = new Loader();
-		String fichero_a_abrir = "eil51.tsp";
-		SimpleACS main = new SimpleACS(l.loadData(fichero_a_abrir));
+		
+		String ficheroaabrir = "eil51.tsp";
+		SimpleACS main = new SimpleACS(ficheroaabrir);
 
-		main.initialize();
-		main.run();
-		main.finish();
+		main.iniciar();
+		main.ejecutar();
+		main.finalizar();
 
 	}
 
-	public SimpleACS(int distances[][]) {
+	public SimpleACS(String nombredelfichero) {
 
-		this.distances = distances;
+		Inicio i= new Inicio();
+		this.distances = i.cargarFichero(nombredelfichero);
 
 		CITIES = distances.length;
 
 		bestTour = new int[CITIES];
-		tabu = new boolean[CITIES];
+		visitadas = new boolean[CITIES];
 
 	}
-
-	public void initialize() {
+	
+	public void generarTour()
+	{
 		int NNTour[] = new int[CITIES + 1];
 		pheromones = new double[CITIES][CITIES];
 		visibility = new double[CITIES][CITIES];
 
 		NNTour[0] = NNTour[CITIES] = 0;
-		tabu[0] = true;
+		visitadas[0] = true;
 
 		for (int i = 1; i < CITIES; i++) {
-			int nearest = 0;
+			int mascercano = 0;
 
 			for (int j = 0; j < CITIES; j++)
-				if (!tabu[j]
-						&& (nearest == 0 || distances[NNTour[i]][j] < distances[i][nearest]))
-					nearest = j;
+				if (!visitadas[j] && (mascercano == 0 || distances[NNTour[i]][j] < distances[i][mascercano]))
+					mascercano = j;
 
-			NNTour[i] = nearest;
-			tabu[nearest] = true;
+			NNTour[i] = mascercano;
+			visitadas[mascercano] = true;
 		}
 
 		bestTour = NNTour;
 
-		bestLength = computeLength(NNTour);
+		bestLength = calcularlongitudtour(NNTour);
 
 		TAUZERO = 1.0 / (CITIES - bestLength); // TODO . por +
 
 		System.out.println("NN = " + bestLength);
+	}
+
+	public void iniciar() {
+		
+		generarTour();
 
 		for (int i = 0; i < CITIES; i++) {
 			for (int j = 0; j < CITIES; j++) {
@@ -83,7 +92,7 @@ public class SimpleACS {
 		}
 	}
 
-	public void run() {
+	public void ejecutar() {
 
 		for (int t = 0; t < TMAX; t++) {
 			if (t % 100 == 0) {
@@ -103,7 +112,7 @@ public class SimpleACS {
 		}
 	}
 
-	public void finish() {
+	public void finalizar() {
 		System.out.println(bestLength);
 
 		for (int i = 0; i < CITIES + 1; i++) {
@@ -121,28 +130,28 @@ public class SimpleACS {
 		double sigmaWeights;
 		double q, tempWeight, target;
 
-		int last, next;
+		int ultima, siguiente;
 
 		for (int i = 0; i < CITIES; i++) {
-			tabu[i] = false;
+			visitadas[i] = false;
 		}
 
-		last = tempTour[0] = tempTour[CITIES] = random.nextInt(CITIES);
-		tabu[last] = true;
+		ultima = tempTour[0] = tempTour[CITIES] = random.nextInt(CITIES);
+		visitadas[ultima] = true;
 
 		for (int i = 1; i < CITIES; i++) {
 			for (int j = 0; j < CITIES; j++) {
 
 				// weights[j] = tabu[j] ? 0 : pheromones[last][j]+
 				// visibility[last][j]; // TODO . por +
-				if (tabu[j] == true) {
+				if (visitadas[j] == true) {
 					weights[j] = 0;
 				} else {
-					weights[j] = pheromones[last][j] + visibility[last][j];
+					weights[j] = pheromones[ultima][j] + visibility[ultima][j];
 				}
 			}
 			q = random.nextDouble();
-			next = 0;
+			siguiente = 0;
 
 			if (q <= qZERO) {
 				tempWeight = 0;
@@ -150,7 +159,7 @@ public class SimpleACS {
 				for (int j = 0; j < CITIES; j++) {
 					if (weights[j] > tempWeight) {
 						tempWeight = weights[j];
-						next = j;
+						siguiente = j;
 					}
 				}
 			} else {
@@ -166,24 +175,24 @@ public class SimpleACS {
 					tempWeight += weights[j];
 
 					if (tempWeight >= target) {
-						next = j;
+						siguiente = j;
 						break;
 					}
 				}
 			}
 
-			if (tabu[next]==true) {
-				System.out.println("TABU\n" + next);
+			if (visitadas[siguiente]==true) {
+				System.out.println("TABU\n" + siguiente);
 				System.exit(0);
 			}
 
-			pheromones[last][next] = pheromones[next][last] = (1 - GAMMA)
-					* pheromones[last][next] + GAMMA * TAUZERO;
-			tempTour[i] = last = next;
-			tabu[last] = true;
+			pheromones[ultima][siguiente] = pheromones[siguiente][ultima] = (1 - GAMMA)
+					* pheromones[ultima][siguiente] + GAMMA * TAUZERO;
+			tempTour[i] = ultima = siguiente;
+			visitadas[ultima] = true;
 		}
 
-		tempLength = computeLength(tempTour);
+		tempLength = calcularlongitudtour(tempTour);
 
 		if (tempLength < bestLength) {
 			bestTour = tempTour;
@@ -191,8 +200,9 @@ public class SimpleACS {
 			System.out.println("Best = " + bestLength);
 		}
 	}
+	
 
-	int computeLength(int tour[]) {
+	int calcularlongitudtour(int tour[]) {
 		int length = 0;
 
 		for (int i = 0; i < CITIES; i++) {
