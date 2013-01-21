@@ -3,70 +3,85 @@ package principal;
 import inicio.Inicio;
 
 import java.util.Random;
+import java.util.StringTokenizer;
 
 public class SimpleACS {
 	
-	static final double BETA = 2, GAMMA = 0.1, qZERO = 0.9, Q = 1.0; // Variables de cuyo significado se desconoce.
-	static final int M = 2, TMAX = 50000;
-	static final Random random = new Random();
-
-	int CITIES; // Cantidad de ciudades a visitar.
-	double TAUZERO; // Variables cuyo significado se desconoce.
-	int distances[][];
-	double visibility[][];
-	double pheromones[][];
-	int bestTour[]; // Mejor ruta hasta el momento
-	int bestLength = Integer.MAX_VALUE; // Longitud de la mejor ruta hasta el
-										// momento
-	boolean visitadas[]; // Lista de ciudades que la hormiga tiene que visitar
-							// para
-
-	// realizar un tour.
-
-	public static void main(String args[]) {
-
-		String ficheroaabrir = "eil51.tsp";
-		SimpleACS main = new SimpleACS();
-
-		main.iniciar(ficheroaabrir);
-		main.ejecutar();
-		main.finalizar();
-
-	}
-
-	public SimpleACS() {
-
-	}
-/**
- * En este método se realizan las siguientes funcionalidades de la aplicación
- * 1- Se abre el fichero y se genera , segun la entrada del mismo , una matriz para poder trabajar con ella.
- * 2- Se inician variables como el numero de ciudades , la mejor ruta , y las ciudades visitadas.
- * 3- Se genera un tour inicial basandose en la proximidad de las ciudades
- * 4- Se inician las feromonas y las visibilidad
- * 5- El metodo ha dejado todas las variables listas para poder proceder al metodo ejecuta
- * @param ficheroaabrir
- */
+	// Variables de cuyo significado se desconoce.
+	private static final double BETA = 2, GAMMA = 0.1, qZERO = 0.9, Q = 1.0;
+	private static final int M = 2, TMAX = 50000;
+	private static final Random random = new Random();
+	
+	// Cantidad de ciudades a visitar.
+	private int CITIES;
+	
+	// Variables cuyo significado se desconoce.
+	private double TAUZERO;
+	private int distances[][];
+	private double visibility[][];
+	private double pheromones[][];
+	
+	// Mejor ruta hasta el momento
+	private int bestTour[];
+	
+	// Longitud de la mejor ruta hasta el momento
+	private int bestLength = Integer.MAX_VALUE;
+	
+	// Lista de ciudades que la hormiga tiene que visitar para realizar un tour.
+	private boolean visitadas[];
+	
+	/**
+	 * <p>En este método se realizan las siguientes funcionalidades de la aplicación.</p>
+	 * <p>1- Se abre el fichero y se genera , segun la entrada del mismo , una matriz para poder trabajar con ella.</p>
+	 * <p>2- Se inician variables como el numero de ciudades , la mejor ruta , y las ciudades visitadas.</p>
+	 * <p>3- Se genera un tour inicial basandose en la proximidad de las ciudades.</p>
+	 * <p>4- Se inician las feromonas y las visibilidad.</p>
+	 * <p>5- El metodo ha dejado todas las variables listas para poder proceder al metodo ejecuta.</p>
+	 * 
+	 * @param ficheroaabrir Ruta del fichero que se va a leer
+	 */
 	public void iniciar(String ficheroaabrir) {
 
-		Inicio in = new Inicio();
-		this.distances = in.cargarFicheroyGenerarMatriz(ficheroaabrir);
-
+		Inicio inicio = new Inicio();
+		
+		StringTokenizer contenidofechero = inicio.cargarFichero(ficheroaabrir);
+		
+		// Se genera una matriz con 
+		distances = inicio.generarMatriz(contenidofechero); 
+		
+		// Obtención del número de ciudades a partir del tamaño de la matriz
 		CITIES = distances.length;
-
+		
+		// Se contruyen las matrices necesarias a partir del número de ciudades
 		bestTour = new int[CITIES];
 		visitadas = new boolean[CITIES];
+	}
+
+	public void ejecutar() {
 
 		generarTour();
 		inicioFeromonasYvisibilidad();
 
+		costruirNuevoTour();
+	}
+	
+	/**
+	 * Método que se ejecuta cuando finaliza todo el proceso del sistema y se va a mostrar la salida de datos.
+	 */
+	public void finalizar() {
+		System.out.println(bestLength);
+
+		for (int i = 0; i < CITIES + 1; i++) {
+			System.out.print(bestTour[i] + " ");
+		}
 	}
 
 	/**
-	 * En esta funcion se inicializan las feromonas al valor TAUZERO y la
+	 * En este método se inicializan las feromonas al valor TAUZERO y la
 	 * visibilidad se inicia al valor de las distancias elevado a un cierto
 	 * valor BETA
 	 */
-	public void inicioFeromonasYvisibilidad() {
+	private void inicioFeromonasYvisibilidad() {
 
 		for (int i = 0; i < CITIES; i++) {
 			for (int j = 0; j < CITIES; j++) {
@@ -80,10 +95,12 @@ public class SimpleACS {
 			}
 		}
 	}
-/**
- * Se genera una ruta inicial basandose en la proximidad de unas ciudades con otras ( ruta no óptima )
- */
+	
+	/**
+	 * Se genera una ruta inicial basandose en la proximidad de unas ciudades con otras ( ruta no óptima )
+	 */
 	public void generarTour() {
+		
 		int NNTour[] = new int[CITIES + 1];
 		pheromones = new double[CITIES][CITIES];
 		visibility = new double[CITIES][CITIES];
@@ -111,37 +128,27 @@ public class SimpleACS {
 
 		System.out.println("NN = " + bestLength);
 	}
-
-	public void ejecutar() {
-
+	
+	private void costruirNuevoTour() {
+		
 		for (int t = 0; t < TMAX; t++) {
 			if (t % 100 == 0) {
 				System.out.println("Iteration" + t);
 			}
 
 			for (int k = 0; k < M; k++) {
-				construirNuevoTour();
+				construirTour();
 			}
 
 			for (int i = 0; i < CITIES; i++) {
 				pheromones[bestTour[i]][bestTour[i + 1]] = pheromones[bestTour[i + 1]][bestTour[i]] = (1 - GAMMA)
 						* pheromones[bestTour[i]][bestTour[i + 1]]
-						+ GAMMA
-						* (Q / bestLength);
+						+ GAMMA * (Q / bestLength);
 			}
 		}
 	}
 
-	public void finalizar() {
-		System.out.println(bestLength);
-
-		for (int i = 0; i < CITIES + 1; i++) {
-			System.out.print(bestTour[i] + " ");
-		}
-
-	}
-
-	public void construirNuevoTour() {
+	private void construirTour() {
 
 		int tempTour[] = new int[CITIES + 1];
 		int tempLength;
@@ -219,7 +226,7 @@ public class SimpleACS {
 		}
 	}
 
-	int calcularlongitudtour(int tour[]) {
+	private int calcularlongitudtour(int tour[]) {
 		int length = 0;
 
 		for (int i = 0; i < CITIES; i++) {
@@ -227,5 +234,20 @@ public class SimpleACS {
 		}
 
 		return length;
+	}
+
+	/**
+	 * Método principal para iniciar la ejecución del sistema.
+	 * 
+	 * @param args No se utilizan
+	 */
+	public static void main(String args[]) {
+
+		String ficheroaabrir = "eil51.tsp";
+		SimpleACS main = new SimpleACS();
+
+		main.iniciar(ficheroaabrir);
+		main.ejecutar();
+		main.finalizar();
 	}
 }

@@ -12,7 +12,7 @@ public class Inicio {
 	int numerodeciudades = 0;
 	
 	// String con el contenido del fichero.
-	String workStr = ""; 
+//	String workStr = ""; 
 
 	/**
 	 * Carga la información sobre el problema desde un fichero.
@@ -21,9 +21,9 @@ public class Inicio {
 	 * @return Devuelve una matriz de Dijstra con el contenido del fichero y el
 	 *         numero de ciudads
 	 */
-	public int[][] cargarFicheroyGenerarMatriz(String path) {
+	public StringTokenizer cargarFichero(String path) {
 		
-		StringTokenizer contenidoficherocontokens;
+		String contenidoficherocontokens = new String();
 
 		if (path != null) {
 			BufferedReader bufferdelectura;
@@ -31,7 +31,7 @@ public class Inicio {
 			try {
 				bufferdelectura = new BufferedReader(new FileReader(path));
 				while (bufferdelectura.ready())
-					workStr += bufferdelectura.readLine() + "\n";
+					contenidoficherocontokens += bufferdelectura.readLine() + "\n";
 
 			} catch (FileNotFoundException e) {
 				System.err.println(e + "\nArchivo no encontrado."
@@ -44,12 +44,14 @@ public class Inicio {
 			}
 		}
 
-		contenidoficherocontokens = new StringTokenizer(workStr, "\n\t\r\f");
+		return new StringTokenizer(contenidoficherocontokens, "\n\t\r\f");
+	}
+	
+	public int[][] generarMatriz(StringTokenizer contenidoFicheroCargado) {
+		
+		int numerodeciudades = obtenerNumeroDeCiudades(contenidoFicheroCargado);
 
-		numerodeciudades = obtenerNumeroDeCiudades(contenidoficherocontokens);
-
-		return construirMatrizDijkstra(contenidoficherocontokens,
-				numerodeciudades);
+		return construirMatrizDijkstra(contenidoFicheroCargado, numerodeciudades);
 	}
 
 	/**
@@ -81,53 +83,13 @@ public class Inicio {
 		return Integer.parseInt(tempStr);
 	}
 
-	/**
-	 * Metodo que mira las posiciones de las ciudades y crea una matriz con las
-	 * distancias entre ellas.
-	 * 
-	 * @param coordenadas
-	 *            Cordenadas de las ciudades.
-	 * @param numerodeciudades
-	 *            El numero de ciudades que hay.
-	 * @return Devuelve una matriz con las distancias que hay entre las
-	 *         ciudades.
-	 */
-	public int[][] calculoDistanciaPorEuclides(double[][] coordenadas,
-			int numerodeciudades) {
-
-		final int indiceprimeracoordenada = 0;
-		final int indicesegundacoordenada = 1;
-
-		int matrizDistancias[][] = new int[numerodeciudades][numerodeciudades];
-		int dist = 0;
-
-		for (int j = 0; j < coordenadas.length; j++) {
-			for (int i = j; i < coordenadas.length; i++) {
-				dist = (int) Math
-						.floor(.5 + Math.sqrt(Math
-								.pow(coordenadas[i][indiceprimeracoordenada]
-										- coordenadas[j][indiceprimeracoordenada],
-										2.0)
-								+ Math.pow(
-										coordenadas[i][indicesegundacoordenada]
-												- coordenadas[j][indicesegundacoordenada],
-										2.0)));
-
-				matrizDistancias[i][j] = dist;
-				matrizDistancias[j][i] = dist;
-			}
-		}
-
-		return matrizDistancias;
-	}
-
 	/*
 	 * The greedy algorithm, where the solution is constructed from the set of
 	 * sorted edges • The christofides algorithm with solutions constructed by
 	 * an Eulerian cycle5, where nodes are not visited twice.
 	 */
-	public int[][] construirMatrizDijkstra(
-			StringTokenizer contenidodelficherocontokens, int numerodeciudades) {
+	public int[][] construirMatrizDijkstra(StringTokenizer contenidodelficherocontokens, int numerodeciudades) {
+		
 		String cadenaleida = "";
 		String edgeWeightType = "UNKNOWN";
 		int resultado[][] = {};
@@ -172,8 +134,46 @@ public class Inicio {
 		// }
 	}
 
-	private int[][] construirMatrizDijkstraCalculoDistanciaEuclides(
-			StringTokenizer strTok, int numerodeciudades) {
+	/**
+	 * Metodo que mira las posiciones de las ciudades y crea una matriz con las
+	 * distancias entre ellas.
+	 * 
+	 * @param coordenadas
+	 *            Cordenadas de las ciudades.
+	 * @param numerodeciudades
+	 *            El numero de ciudades que hay.
+	 * @return Devuelve una matriz con las distancias que hay entre las
+	 *         ciudades.
+	 */
+	public int[][] calculoDistanciaPorEuclides(double[][] coordenadas, int numerodeciudades) {
+
+		final int indiceprimeracoordenada = 0;
+		final int indicesegundacoordenada = 1;
+
+		int matrizDistancias[][] = new int[numerodeciudades][numerodeciudades];
+		int dist = 0;
+
+		for (int j = 0; j < coordenadas.length; j++) {
+			for (int i = j; i < coordenadas.length; i++) {
+				dist = (int) Math
+						.floor(.5 + Math.sqrt(Math
+								.pow(coordenadas[i][indiceprimeracoordenada]
+										- coordenadas[j][indiceprimeracoordenada],
+										2.0)
+								+ Math.pow(
+										coordenadas[i][indicesegundacoordenada]
+												- coordenadas[j][indicesegundacoordenada],
+										2.0)));
+
+				matrizDistancias[i][j] = dist;
+				matrizDistancias[j][i] = dist;
+			}
+		}
+
+		return matrizDistancias;
+	}
+
+	private int[][] construirMatrizDijkstraCalculoDistanciaEuclides(StringTokenizer strTok, int numerodeciudades) {
 
 		double coordenadas[][] = new double[numerodeciudades][2];
 		final int indiceprimeracoordenada = 0;
@@ -212,7 +212,14 @@ public class Inicio {
 
 		return matrizAuxiliar;
 	}
-
+	
+	/**
+	 * 
+	 * 
+	 * @param strTok
+	 * @param numerodeciudades
+	 * @return
+	 */
 	private int[][] construirMatrizExplicita(StringTokenizer strTok,
 			int numerodeciudades) {
 
