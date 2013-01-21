@@ -5,6 +5,8 @@ import inicio.Inicio;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+import salidaDeDatos.SalidaDeDatos;
+
 public class SimpleACS {
 	
 	// Variables de cuyo significado se desconoce.
@@ -62,7 +64,7 @@ public class SimpleACS {
 
 	public void ejecutar() {
 		
-		costruirNuevoTour();
+		construirNuevoTour();
 	}
 	
 	/**
@@ -112,10 +114,10 @@ public class SimpleACS {
 		for (int i = 1; i < CITIES; i++) {
 			int mascercano = 0;
 
-			for (int j = 0; j < CITIES; j++)
+			for (int j = 0; j < CITIES; j++){
 				if (!visitadas[j]
 						&& (mascercano == 0 || distances[NNTour[i]][j] < distances[i][mascercano]))
-					mascercano = j;
+					{mascercano = j;}}
 
 			NNTour[i] = mascercano;
 			visitadas[mascercano] = true;
@@ -130,11 +132,15 @@ public class SimpleACS {
 		System.out.println("NN = " + bestLength);
 	}
 	
-	private void costruirNuevoTour() {
+	private void construirNuevoTour() {
+		
+		SalidaDeDatos out= new SalidaDeDatos();
+		String mensaje;
 		
 		for (int t = 0; t < TMAX; t++) {
 			if (t % 100 == 0) {
-				System.out.println("Iteration" + t);
+				mensaje=String.valueOf(t)+ "#iteration";
+				out.mostrarPorPantalla(mensaje);
 			}
 
 			for (int k = 0; k < M; k++) {
@@ -150,6 +156,9 @@ public class SimpleACS {
 	}
 
 	private void construirTour() {
+		
+		SalidaDeDatos out= new SalidaDeDatos();
+		String mensaje;
 
 		int tempTour[] = new int[CITIES + 1];
 		int tempLength;
@@ -208,8 +217,9 @@ public class SimpleACS {
 			}
 
 			if (visitadas[siguiente] == true) {
-				System.out.println("TABU\n" + siguiente);
-				System.exit(0);
+				mensaje= String.valueOf(siguiente) + "#tabu";
+				out.mostrarPorPantalla(mensaje);
+				//System.exit(0);
 			}
 
 			pheromones[ultima][siguiente] = pheromones[siguiente][ultima] = (1 - GAMMA)
