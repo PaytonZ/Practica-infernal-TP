@@ -7,7 +7,7 @@ import sistema.SimpleACS;
  * 
  * @author Juan Luis Perez Valbuena
  * @author Alvaro Quesada Pimentel
- * @author Juan Carlos Marco
+ * @author Juan Carlos Marco Gonzalez
  * @author Daniel Serrano Torres
  */
 public class Manager {

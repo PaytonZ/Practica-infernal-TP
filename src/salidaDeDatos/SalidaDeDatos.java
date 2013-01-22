@@ -3,7 +3,7 @@ package salidaDeDatos;
 /**
  * Esta clase ha sido REUTILIZADA de la practica 1 'A first Approach to Cycling'
  * 
- * @author Juan Carlos Marco
+ * @author Juan Carlos Marco Gonzalez
  * @author Juan Luis Perez Valbuena
  */
 public class SalidaDeDatos {
