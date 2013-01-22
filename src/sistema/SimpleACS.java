@@ -1,4 +1,4 @@
-package principal;
+package sistema;
 
 import inicio.CargarFichero;
 import inicio.CrearMatrices;
@@ -73,24 +73,33 @@ public class SimpleACS {
 	
 	/**
 	 * Método que se ejecuta cuando finaliza todo el proceso del sistema y se va a mostrar la salida de datos.
+	 * Realiza lo siguiente
+	 * 1- Muestra en unidades de medida la longitud de la ruta mejor obtenida por el algoritmo
+	 * 2- Muestra el ciclo completo, indicando las ciudades a vistadas //TODO mejorar
 	 */
 	public void finalizar() {
 		
 		mostrarMejorRuta();
 	}
 
-	void mostrarMejorRuta()
+	private void mostrarMejorRuta() 
 	{
 		SalidaDeDatos output= new SalidaDeDatos();
 		StringBuilder mensaje= new StringBuilder();
 		
 		mensaje.append(bestLength);
 		
-		output.mostrarPorPantalla(mensaje.toString(),"defecto");
+		output.mostrarPorPantalla(mensaje.toString(),"#defecto");
 
+		// Limpia el buffer completo para crear un nuevo mensaje
+		// reusando el objeto salida de datos.
+		mensaje.delete(0, mensaje.length());
+		
 		for (int i = 0; i < CITIES + 1; i++) {
-			System.out.print(bestTour[i] + " ");
+			
+			mensaje.append(bestTour[i]).append(" ");
 		}
+		output.mostrarPorPantalla(mensaje.toString(),"#defecto");
 	}
 	
 	/**
@@ -145,7 +154,12 @@ public class SimpleACS {
 
 		TAUZERO = 1.0 / (CITIES - bestLength);
 		
-		System.out.println("NN = " + bestLength);
+		SalidaDeDatos output= new SalidaDeDatos();
+		StringBuilder mensaje= new StringBuilder();
+		
+		mensaje.append(bestLength).append("#NN");
+		
+		//System.out.println("NN = " + bestLength);
 	}
 	
 	private void construirNuevoTour() {
@@ -263,20 +277,5 @@ public class SimpleACS {
 		}
 
 		return length;
-	}
-
-	/**
-	 * Método principal para iniciar la ejecución del sistema.
-	 * 
-	 * @param args No se utilizan
-	 */
-	public static void main(String args[]) {
-
-		String ficheroaabrir = "eil51.tsp";
-		SimpleACS main = new SimpleACS();
-
-		main.iniciar(ficheroaabrir);
-		main.ejecutar();
-		main.finalizar();
 	}
 }

@@ -64,27 +64,33 @@ public class SalidaDeDatos {
 	public void mostrarPorPantalla(String mensaje) {
 
 		StringBuffer mensajefinal = new StringBuffer();
+		StringBuffer formato = new StringBuffer();
+		String cuerpomensaje = new String();
+		
 		int posicionempiezaformato = 0;
 
 		// buscamos la posicion a partir de la cual empieza el formato
 		while (posicionempiezaformato < mensaje.length()
 				&& mensaje.charAt(posicionempiezaformato) != '#') {
+			
 			posicionempiezaformato++;
-
 		}
+		
+		formato.append(mensaje.substring(posicionempiezaformato + 1).toString());
+		cuerpomensaje = mensaje.substring(0, posicionempiezaformato);
+		
 		// como ya sabemos donde empieza el formato, ahora
 		//
 		// comparamos para sacar la salida formateada
 		// con dicho formato
-		switch (mensaje.substring(posicionempiezaformato + 1).toString()) {
+		switch (formato.toString()) {
+		
 			case "cadencia": {
-				mensajefinal.append(mensaje.substring(0, posicionempiezaformato)
-						+ " pedaladas por segundo ");
+				mensajefinal.append(" pedaladas por segundo ");
 				break;
 			}
 			case "velocidad": {
-				mensajefinal.append("Velocidad actual:"
-						+ mensaje.substring(0, posicionempiezaformato) + " m/s ");
+				mensajefinal.append("Velocidad actual:").append(" m/s ");
 				break;
 			}
 			case "distancia": {
@@ -108,19 +114,22 @@ public class SalidaDeDatos {
 				}
 			}
 			case "iteration": {
-				mensajefinal.append("Iteracion nº:"
-						+ mensaje.substring(0, posicionempiezaformato));
+				mensajefinal.append("Iteracion nº:").append(cuerpomensaje);
 	
 				break;
 			}
 			case "tabu": {
-				mensajefinal.append("TABU\n"
-						+ mensaje.substring(0, posicionempiezaformato));
+				mensajefinal.append("TABU\n").append(cuerpomensaje);
 	
 				break;
 			}
-			default: { mensajefinal.append(mensaje.substring(0, posicionempiezaformato));
+			case "NN": {
+				mensajefinal.append("NN = ").append(cuerpomensaje);
 				
+				break;
+			}
+			default: {
+				mensajefinal.append(cuerpomensaje);
 			}
 		}
 
