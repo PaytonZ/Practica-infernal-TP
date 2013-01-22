@@ -159,7 +159,7 @@ public class SimpleACS {
 		
 		mensaje.append(bestLength).append("#NN");
 		
-		//System.out.println("NN = " + bestLength);
+		output.mostrarPorPantalla(mensaje.toString());
 	}
 	
 	private void construirNuevoTour() {
@@ -188,9 +188,9 @@ public class SimpleACS {
 	}
 
 	private void construirTour() {
-		
-		SalidaDeDatos out= new SalidaDeDatos();
-		String mensaje;
+
+		SalidaDeDatos output= new SalidaDeDatos();
+		StringBuilder mensaje = new StringBuilder();
 
 		int tempTour[] = new int[CITIES + 1];
 		int tempLength;
@@ -243,17 +243,15 @@ public class SimpleACS {
 
 				if (tempWeight >= target) {
 						siguiente = j;
-						//break;
 					}
 				}
 			}
-
+			
 			if (visitadas[siguiente] == true) {
-				mensaje= String.valueOf(siguiente) + "#tabu";
-				out.mostrarPorPantalla(mensaje);
-				//System.exit(0);
+				mensaje.append(siguiente).append("#tabu");
+				output.mostrarPorPantalla(mensaje.toString());
 			}
-
+			
 			pheromones[ultima][siguiente] = pheromones[siguiente][ultima] = (1 - GAMMA)
 					* pheromones[ultima][siguiente] + GAMMA * TAUZERO;
 			tempTour[i] = ultima = siguiente;
@@ -263,9 +261,15 @@ public class SimpleACS {
 		tempLength = calcularlongitudtour(tempTour);
 
 		if (tempLength < bestLength) {
+			
+			mensaje.delete(0, mensaje.length());
+			
 			bestTour = tempTour;
 			bestLength = tempLength;
-			System.out.println("Best = " + bestLength);
+			
+			mensaje.append(bestLength).append("#Best");
+			
+			output.mostrarPorPantalla(mensaje.toString());
 		}
 	}
 

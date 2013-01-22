@@ -128,6 +128,10 @@ public class SalidaDeDatos {
 				
 				break;
 			}
+			case "Best": {
+				mensajefinal.append("Best = ").append(cuerpomensaje);
+				break;
+			}
 			default: {
 				mensajefinal.append(cuerpomensaje);
 			}
