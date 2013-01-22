@@ -19,8 +19,20 @@ import salidaDeDatos.SalidaDeDatos;
 public class SimpleACS {
 	
 	// Variables de cuyo significado se desconoce.
-	private static final double BETA = 2, GAMMA = 0.1, qZERO = 0.9, Q = 1.0;
-	private static final int M = 2, TMAX = 50000;
+	
+		//BETA aparece en la linea 133
+		//GAMMA aparece en las lineas 197, 199, 269 y 270
+		//qZERO aparece en las linea 238
+		//Q aparece en la linea 201
+	
+	private static final double BETA = 2, GAMMA = 0.1, qZERO = 0.9,Q  = 1.0;
+	
+		//M aparece en las lineas  181 y 189
+		//TMAX aparece en la linea 182
+	private static final int  M = 2, TMAX = 50000;
+	
+		//random aparece en las lineas 226, 238 y 256
+		//TAUZERO aparece en las lineas 133,174, 275
 	private static final Random random = new Random();
 	private double TAUZERO;
 	
