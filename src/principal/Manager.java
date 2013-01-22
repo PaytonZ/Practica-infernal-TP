@@ -2,6 +2,14 @@ package principal;
 
 import sistema.SimpleACS;
 
+/**
+ * Clase que inicia la ejecución del sistema
+ * 
+ * @author Juan Luis Perez Valbuena
+ * @author Alvaro Quesada Pimentel
+ * @author Juan Carlos Marco
+ * @author Daniel Serrano Torres
+ */
 public class Manager {
 
 	/**
@@ -11,7 +19,9 @@ public class Manager {
 	 */
 	public static void main(String args[]) {
 
-		String ficheroaabrir = "eil51.tsp";
+		//String ficheroaabrir = "eil51.tsp";
+		String ficheroaabrir = "test1.tsp";
+		
 		SimpleACS main = new SimpleACS();
 
 		main.iniciar(ficheroaabrir);

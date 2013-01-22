@@ -2,6 +2,14 @@ package inicio;
 
 import java.util.StringTokenizer;
 
+/**
+ * Clase que construye una matriz de cuidades con datos obtenidos a través parámetros.
+ * 
+ * @author Juan Luis Perez Valbuena
+ * @author Alvaro Quesada Pimentel
+ * @author Juan Carlos Marco
+ * @author Daniel Serrano Torres
+ */
 public class CrearMatrices {
 	
 	/**
@@ -20,18 +28,16 @@ public class CrearMatrices {
 
 	
 
-	/*
-	 * The greedy algorithm, where the solution is constructed from the set of
-	 * sorted edges • The christofides algorithm with solutions constructed by
-	 * an Eulerian cycle5, where nodes are not visited twice.
+	/**
+	 * Genera una matriz, donde la solución es construida a partir del conjunto
+	 * de bordes ordenados. El algoritmo Christofides con soluciones construidas por
+	 * un ciclo euleriano, donde los nodos no son visitadas dos veces.
 	 */
 	public int[][] construirMatrizDijkstra(StringTokenizer contenidodelficherocontokens, int numerodeciudades) {
 		
 		String cadenaleida = "";
 		String edgeWeightType = "UNKNOWN";
 		int resultado[][] = {};
-
-		// while (true) {
 
 		cadenaleida = contenidodelficherocontokens.nextToken();
 
@@ -72,8 +78,7 @@ public class CrearMatrices {
 	}
 
 	/**
-	 * Método que mira las posiciones de las ciudades y crea una matriz con las
-	 * distancias entre ellas.
+	 * Método que crea una matriz calculando las distancias entre ellas por el método de euclides.
 	 * 
 	 * @param coordenadas Cordenadas de las ciudades.
 	 * @param numerodeciudades El numero de ciudades que hay.
@@ -103,6 +108,13 @@ public class CrearMatrices {
 		return matrizDistancias;
 	}
 
+	/**
+	 * Construye una matriz con el calculo de la distancia de euclides.
+	 * 
+	 * @param strTok
+	 * @param numerodeciudades
+	 * @return Matriz con el calculo por euclides de la distancia.
+	 */
 	private int[][] construirMatrizDijkstraCalculoDistanciaEuclides(StringTokenizer strTok, int numerodeciudades) {
 
 		double coordenadas[][] = new double[numerodeciudades][2];
@@ -137,8 +149,7 @@ public class CrearMatrices {
 
 		int matrizAuxiliar[][] = new int[numerodeciudades][numerodeciudades];
 
-		matrizAuxiliar = calculoDistanciaPorEuclides(coordenadas,
-				numerodeciudades);
+		matrizAuxiliar = calculoDistanciaPorEuclides(coordenadas, numerodeciudades);
 
 		return matrizAuxiliar;
 	}

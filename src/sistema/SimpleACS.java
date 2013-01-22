@@ -8,6 +8,14 @@ import java.util.StringTokenizer;
 
 import salidaDeDatos.SalidaDeDatos;
 
+/**
+ * Clase que resuleve el problema del viajante mediante feromonas de hormigas
+ * 
+ * @author Juan Luis Perez Valbuena
+ * @author Alvaro Quesada Pimentel
+ * @author Juan Carlos Marco
+ * @author Daniel Serrano Torres
+ */
 public class SimpleACS {
 	
 	// Variables de cuyo significado se desconoce.
@@ -33,6 +41,8 @@ public class SimpleACS {
 	
 	// Lista de ciudades que la hormiga tiene que visitar para realizar un tour.
 	private boolean visitadas[];
+	
+	private int NNTour[];
 	
 	/**
 	 * <p>En este método se realizan las siguientes funcionalidades de la aplicación.</p>
@@ -125,9 +135,9 @@ public class SimpleACS {
 	/**
 	 * Se genera una ruta inicial basandose en la proximidad de unas ciudades con otras ( ruta no óptima ).
 	 */
-	public void generarTour() {
+	private void generarTour() {
 		
-		int NNTour[] = new int[CITIES + 1];
+		NNTour = new int[CITIES + 1];
 		pheromones = new double[CITIES][CITIES];
 		visibility = new double[CITIES][CITIES];
 

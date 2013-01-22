@@ -23,11 +23,11 @@ public class TestLoader {
 		String path = "test.tsp";
 		
 		StringTokenizer contenidoFichero = inicio.cargarFichero(path);
-		assertNotNull("Error: El fichero no se a cargado correctamente", contenidoFichero);
+		assertNotNull("Error: El fichero no se ha cargado correctamente", contenidoFichero);
 		
 		String cadenarecostrudiacontenidofichero = reconstruirCadena(contenidoFichero);
 		
-		assertNotNull("Error: El fichero no se a cargado correctamente", cadenarecostrudiacontenidofichero);
+		assertNotNull("Error: El fichero no se ha cargado correctamente", cadenarecostrudiacontenidofichero);
 		assertTrue("Error: El fichero no contiene ningún dato o se ha cargado incorrectamente", cadenarecostrudiacontenidofichero.length() > 0);
 	}
 	

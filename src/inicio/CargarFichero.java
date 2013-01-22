@@ -6,6 +6,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+/**
+ * Clase que obtiene el contenido del fichero del problema del viajante.
+ * Lo prepara para ser utilizado por clases de tratamiento de datos.
+ * 
+ * @author Juan Luis Perez Valbuena
+ * @author Alvaro Quesada Pimentel
+ * @author Juan Carlos Marco
+ * @author Daniel Serrano Torres
+ */
 public class CargarFichero {
 
 	/**
@@ -40,8 +49,5 @@ public class CargarFichero {
 
 		return new StringTokenizer(contenidoficherocontokens, "\n\t\r\f");
 	}
-	
-	
-	
 }
 

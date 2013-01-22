@@ -2,8 +2,9 @@ package salidaDeDatos;
 
 /**
  * Esta clase ha sido REUTILIZADA de la practica 1 'A first Approach to Cycling'
- * realizada por Juan Carlos Marco y Juan Luis Pérez
  * 
+ * @author Juan Carlos Marco
+ * @author Juan Luis Perez Valbuena
  */
 public class SalidaDeDatos {
 

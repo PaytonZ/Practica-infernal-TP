@@ -1,18 +1,18 @@
-package java.matematicas.euclides;
+package tests.sistema;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestEuclidesDistancia {
+public class TestMatrizDijkstra {
 
 	@Before
 	public void setUp() throws Exception {
 	}
 
 	@Test
-	public void testCalculoDistanciaPorEuclides() {
+	public void testConstruirMatrizDijkstra() {
 		fail("Not yet implemented");
 	}
 
