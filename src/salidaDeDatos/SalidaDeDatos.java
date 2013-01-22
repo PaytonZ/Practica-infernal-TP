@@ -42,10 +42,13 @@ public class SalidaDeDatos {
 	
 					i++;
 				}
-	
 				break;
-			}
+				}
+								
+				
+				default:{ mensajefinal.append(mensaje);}
 		}
+		
 		
 		System.out.println(mensajefinal.toString());
 	}
@@ -115,6 +118,9 @@ public class SalidaDeDatos {
 						+ mensaje.substring(0, posicionempiezaformato));
 	
 				break;
+			}
+			default: { mensajefinal.append(mensaje.substring(0, posicionempiezaformato));
+				
 			}
 		}
 

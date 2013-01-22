@@ -1,45 +1,8 @@
 package inicio;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.StringTokenizer;
 
-public class Inicio {
-
-	/**
-	 * Carga la información sobre el problema desde un fichero.
-	 * 
-	 * @param path Ruta del fichero a leer
-	 * @return Devuelve una matriz de Dijstra con el contenido del fichero y el
-	 *         numero de ciudads
-	 */
-	public StringTokenizer cargarFichero(String path) {
-		
-		String contenidoficherocontokens = new String();
-
-		if (path != null) {
-			BufferedReader bufferdelectura;
-
-			try {
-				bufferdelectura = new BufferedReader(new FileReader(path));
-				while (bufferdelectura.ready())
-					contenidoficherocontokens += bufferdelectura.readLine() + "\n";
-
-			} catch (FileNotFoundException e) {
-				System.err.println(e + "\nArchivo no encontrado."
-						+ "Escriba el nuevo nombre de archivo y por área.");
-
-			} catch (IOException e) {
-				System.err.println(e
-						+ "\nError de hardware durante la lectura."
-						+ "Introduzca el nuevo nombre de archivo y por área.");
-			}
-		}
-
-		return new StringTokenizer(contenidoficherocontokens, "\n\t\r\f");
-	}
+public class CrearMatrices {
 	
 	/**
 	 * Gerera la matriz a partir del contenido del fichero.
@@ -49,39 +12,13 @@ public class Inicio {
 	 */
 	public int[][] generarMatriz(StringTokenizer contenidoFicheroCargado) {
 		
+		
 		int numerodeciudades = obtenerNumeroDeCiudades(contenidoFicheroCargado);
 
 		return construirMatrizDijkstra(contenidoFicheroCargado, numerodeciudades);
 	}
 
-	/**
-	 * Método que busca el numero de ciudades en el string y lo devuelve
-	 * 
-	 * @param strTok Un StringTokenizer con el contenido del fichero
-	 * @return El numero de ciudades en forma de entero
-	 */
-	private int obtenerNumeroDeCiudades(StringTokenizer strTok) {
-
-		String tempStr = "";
-		boolean encontradoNumeroCiudades = false;
-
-		while (encontradoNumeroCiudades == false) {
-			tempStr = strTok.nextToken();
-
-			if (tempStr.equals("DIMENSION")) {
-				strTok.nextToken();
-				tempStr = strTok.nextToken();
-				encontradoNumeroCiudades = true;
-			}
-
-			else if (tempStr.equals("DIMENSION:")) {
-				tempStr = strTok.nextToken();
-				encontradoNumeroCiudades = true;
-			}
-		}
-		
-		return Integer.parseInt(tempStr);
-	}
+	
 
 	/*
 	 * The greedy algorithm, where the solution is constructed from the set of
@@ -258,5 +195,33 @@ public class Inicio {
 
 		return matrizAuxiliar;
 	}
-}
 
+	/**
+	 * Método que busca el numero de ciudades en el string y lo devuelve
+	 * 
+	 * @param strTok Un StringTokenizer con el contenido del fichero
+	 * @return El numero de ciudades en forma de entero
+	 */
+	private int obtenerNumeroDeCiudades(StringTokenizer strTok) {
+
+		String tempStr = "";
+		boolean encontradoNumeroCiudades = false;
+
+		while (encontradoNumeroCiudades == false) {
+			tempStr = strTok.nextToken();
+
+			if (tempStr.equals("DIMENSION")) {
+				strTok.nextToken();
+				tempStr = strTok.nextToken();
+				encontradoNumeroCiudades = true;
+			}
+
+			else if (tempStr.equals("DIMENSION:")) {
+				tempStr = strTok.nextToken();
+				encontradoNumeroCiudades = true;
+			}
+		}
+		
+		return Integer.parseInt(tempStr);
+	}
+}

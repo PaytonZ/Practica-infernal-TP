@@ -2,7 +2,7 @@ package tests.inicio;
 
 import static org.junit.Assert.*;
 
-import inicio.Inicio;
+import inicio.CargarFichero;
 
 import java.util.StringTokenizer;
 
@@ -11,11 +11,11 @@ import org.junit.Test;
 
 public class TestLoader {
 
-	private Inicio inicio;
+	private CargarFichero inicio;
 	
 	@Before
 	public void setUp() throws Exception {
-		 inicio = new Inicio();
+		 inicio = new CargarFichero();
 	}
 
 	@Test

@@ -1,6 +1,7 @@
 package principal;
 
-import inicio.Inicio;
+import inicio.CargarFichero;
+import inicio.CrearMatrices;
 
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -13,13 +14,14 @@ public class SimpleACS {
 	private static final double BETA = 2, GAMMA = 0.1, qZERO = 0.9, Q = 1.0;
 	private static final int M = 2, TMAX = 50000;
 	private static final Random random = new Random();
+	private double TAUZERO;
 	
 	// Cantidad de ciudades a visitar.
 	private int CITIES;
 	
-	// Variables cuyo significado se desconoce.
-	private double TAUZERO;
-	private int distances[][];
+	
+	//TODO falta comentar estas variables
+	private int distances[][]; 
 	private double visibility[][];
 	private double pheromones[][];
 	
@@ -44,12 +46,14 @@ public class SimpleACS {
 	 */
 	public void iniciar(String ficheroaabrir) {
 
-		Inicio inicio = new Inicio();
+		CargarFichero cargarfichero = new CargarFichero();
+		CrearMatrices creadormatrices = new CrearMatrices();
 		
-		StringTokenizer contenidofechero = inicio.cargarFichero(ficheroaabrir);
+		StringTokenizer contenidofechero = cargarfichero.cargarFichero(ficheroaabrir);
 		
-		// Se genera una matriz con 
-		distances = inicio.generarMatriz(contenidofechero); 
+		// Se genera una matriz con la clase creadormatrices que decidira 
+		// dependiendo de la entrada la matriz a crear adecuada
+		distances = creadormatrices.generarMatriz(contenidofechero); 
 		
 		// Obtención del número de ciudades a partir del tamaño de la matriz
 		CITIES = distances.length;
@@ -72,13 +76,23 @@ public class SimpleACS {
 	 */
 	public void finalizar() {
 		
-		System.out.println(bestLength);
+		mostrarMejorRuta();
+	}
+
+	void mostrarMejorRuta()
+	{
+		SalidaDeDatos output= new SalidaDeDatos();
+		StringBuilder mensaje= new StringBuilder();
+		
+		mensaje.append(bestLength);
+		
+		output.mostrarPorPantalla(mensaje.toString(),"defecto");
 
 		for (int i = 0; i < CITIES + 1; i++) {
 			System.out.print(bestTour[i] + " ");
 		}
 	}
-
+	
 	/**
 	 * En este método se inicializan las feromonas al valor TAUZERO y la
 	 * visibilidad se inicia al valor de las distancias elevado a un cierto
@@ -137,12 +151,14 @@ public class SimpleACS {
 	private void construirNuevoTour() {
 		
 		SalidaDeDatos out= new SalidaDeDatos();
-		String mensaje;
+		StringBuilder mensaje  = new StringBuilder();
 		
 		for (int t = 0; t < TMAX; t++) {
 			if (t % 100 == 0) {
-				mensaje=String.valueOf(t)+ "#iteration";
-				out.mostrarPorPantalla(mensaje);
+				mensaje.delete(0, mensaje.length());
+				
+				mensaje.append(t).append("#iteration");
+				out.mostrarPorPantalla(mensaje.toString());
 			}
 
 			for (int k = 0; k < M; k++) {
