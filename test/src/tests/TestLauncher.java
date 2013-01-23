@@ -9,4 +9,5 @@ import tests.sistema.TestMatrizDijkstra;
 
 @RunWith(Suite.class)
 @SuiteClasses({ TestLoader.class, TestMatrizDijkstra.class, })
-public class TestLauncher {}
+public class TestLauncher {
+}

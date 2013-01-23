@@ -3,7 +3,8 @@ package inicio;
 import java.util.StringTokenizer;
 
 /**
- * Clase que construye una matriz de cuidades con datos obtenidos a través parámetros.
+ * Clase que construye una matriz de cuidades con datos obtenidos a través
+ * parámetros.
  * 
  * @author Juan Luis Perez Valbuena
  * @author Alvaro Quesada Pimentel
@@ -11,7 +12,7 @@ import java.util.StringTokenizer;
  * @author Daniel Serrano Torres
  */
 public class CrearMatrices {
-	
+
 	/**
 	 * Gerera la matriz a partir del contenido del fichero.
 	 * 
@@ -19,22 +20,21 @@ public class CrearMatrices {
 	 * @return
 	 */
 	public int[][] generarMatriz(StringTokenizer contenidoFicheroCargado) {
-		
-		
+
 		int numerodeciudades = obtenerNumeroDeCiudades(contenidoFicheroCargado);
 
-		return construirMatrizDijkstra(contenidoFicheroCargado, numerodeciudades);
+		return construirMatrizDijkstra(contenidoFicheroCargado,
+				numerodeciudades);
 	}
-
-	
 
 	/**
 	 * Genera una matriz, donde la solución es construida a partir del conjunto
-	 * de bordes ordenados. El algoritmo Christofides con soluciones construidas por
-	 * un ciclo euleriano, donde los nodos no son visitadas dos veces.
+	 * de bordes ordenados. El algoritmo Christofides con soluciones construidas
+	 * por un ciclo euleriano, donde los nodos no son visitadas dos veces.
 	 */
-	public int[][] construirMatrizDijkstra(StringTokenizer contenidodelficherocontokens, int numerodeciudades) {
-		
+	public int[][] construirMatrizDijkstra(
+			StringTokenizer contenidodelficherocontokens, int numerodeciudades) {
+
 		String cadenaleida = "";
 		String edgeWeightType = "UNKNOWN";
 		int resultado[][] = {};
@@ -74,17 +74,22 @@ public class CrearMatrices {
 		}
 
 		return resultado;
-		// }
+
 	}
 
 	/**
-	 * Método que crea una matriz calculando las distancias entre ellas por el método de euclides.
+	 * Método que crea una matriz calculando las distancias entre ellas por el
+	 * método de euclides.
 	 * 
-	 * @param coordenadas Cordenadas de las ciudades.
-	 * @param numerodeciudades El numero de ciudades que hay.
-	 * @return Devuelve una matriz con las distancias que hay entre las ciudades.
+	 * @param coordenadas
+	 *            Cordenadas de las ciudades.
+	 * @param numerodeciudades
+	 *            El numero de ciudades que hay.
+	 * @return Devuelve una matriz con las distancias que hay entre las
+	 *         ciudades.
 	 */
-	public int[][] calculoDistanciaPorEuclides(double[][] coordenadas, int numerodeciudades) {
+	public int[][] calculoDistanciaPorEuclides(double[][] coordenadas,
+			int numerodeciudades) {
 
 		final int indiceprimeracoordenada = 0;
 		final int indicesegundacoordenada = 1;
@@ -95,10 +100,14 @@ public class CrearMatrices {
 		for (int j = 0; j < coordenadas.length; j++) {
 			for (int i = j; i < coordenadas.length; i++) {
 				dist = (int) Math
-						.floor(.5 + Math.sqrt(Math.pow(coordenadas[i][indiceprimeracoordenada]
-										- coordenadas[j][indiceprimeracoordenada], 2.0)
-								+ Math.pow(coordenadas[i][indicesegundacoordenada]
-												- coordenadas[j][indicesegundacoordenada], 2.0)));
+						.floor(.5 + Math.sqrt(Math
+								.pow(coordenadas[i][indiceprimeracoordenada]
+										- coordenadas[j][indiceprimeracoordenada],
+										2.0)
+								+ Math.pow(
+										coordenadas[i][indicesegundacoordenada]
+												- coordenadas[j][indicesegundacoordenada],
+										2.0)));
 
 				matrizDistancias[i][j] = dist;
 				matrizDistancias[j][i] = dist;
@@ -115,7 +124,8 @@ public class CrearMatrices {
 	 * @param numerodeciudades
 	 * @return Matriz con el calculo por euclides de la distancia.
 	 */
-	private int[][] construirMatrizDijkstraCalculoDistanciaEuclides(StringTokenizer strTok, int numerodeciudades) {
+	private int[][] construirMatrizDijkstraCalculoDistanciaEuclides(
+			StringTokenizer strTok, int numerodeciudades) {
 
 		double coordenadas[][] = new double[numerodeciudades][2];
 		final int indiceprimeracoordenada = 0;
@@ -149,11 +159,12 @@ public class CrearMatrices {
 
 		int matrizAuxiliar[][] = new int[numerodeciudades][numerodeciudades];
 
-		matrizAuxiliar = calculoDistanciaPorEuclides(coordenadas, numerodeciudades);
+		matrizAuxiliar = calculoDistanciaPorEuclides(coordenadas,
+				numerodeciudades);
 
 		return matrizAuxiliar;
 	}
-	
+
 	/**
 	 * Este método genera una matriz explicita.
 	 * 
@@ -161,7 +172,8 @@ public class CrearMatrices {
 	 * @param numerodeciudades
 	 * @return La matriz construida
 	 */
-	private int[][] construirMatrizExplicita(StringTokenizer strTok, int numerodeciudades) {
+	private int[][] construirMatrizExplicita(StringTokenizer strTok,
+			int numerodeciudades) {
 
 		int matrizAuxiliar[][] = new int[numerodeciudades][numerodeciudades];
 
@@ -188,15 +200,19 @@ public class CrearMatrices {
 					}
 					if (cadenaleida.equals("0")) {
 
-						matrizAuxiliar[countI][countJ] = Integer.parseInt(cadenaleida);
-						matrizAuxiliar[countJ][countI] = Integer.parseInt(cadenaleida);
+						matrizAuxiliar[countI][countJ] = Integer
+								.parseInt(cadenaleida);
+						matrizAuxiliar[countJ][countI] = Integer
+								.parseInt(cadenaleida);
 
 						countI++;
 						countJ = 0;
 					} else {
 
-						matrizAuxiliar[countI][countJ] = Integer.parseInt(cadenaleida);
-						matrizAuxiliar[countJ][countI] = Integer.parseInt(cadenaleida);
+						matrizAuxiliar[countI][countJ] = Integer
+								.parseInt(cadenaleida);
+						matrizAuxiliar[countJ][countI] = Integer
+								.parseInt(cadenaleida);
 
 						countJ++;
 					}
@@ -210,7 +226,8 @@ public class CrearMatrices {
 	/**
 	 * Método que busca el numero de ciudades en el string y lo devuelve
 	 * 
-	 * @param strTok Un StringTokenizer con el contenido del fichero
+	 * @param strTok
+	 *            Un StringTokenizer con el contenido del fichero
 	 * @return El numero de ciudades en forma de entero
 	 */
 	private int obtenerNumeroDeCiudades(StringTokenizer strTok) {
@@ -232,7 +249,7 @@ public class CrearMatrices {
 				encontradoNumeroCiudades = true;
 			}
 		}
-		
+
 		return Integer.parseInt(tempStr);
 	}
 }

@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 
 /**
- * Clase que obtiene el contenido del fichero del problema del viajante.
- * Lo prepara para ser utilizado por clases de tratamiento de datos.
+ * Clase que obtiene el contenido del fichero del problema del viajante. Lo
+ * prepara para ser utilizado por clases de tratamiento de datos.
  * 
  * @author Juan Luis Perez Valbuena
  * @author Alvaro Quesada Pimentel
@@ -20,12 +20,13 @@ public class CargarFichero {
 	/**
 	 * Carga la información sobre el problema desde un fichero.
 	 * 
-	 * @param path Ruta del fichero a leer
+	 * @param path
+	 *            Ruta del fichero a leer
 	 * @return Devuelve una matriz de Dijstra con el contenido del fichero y el
 	 *         numero de ciudads
 	 */
 	public StringTokenizer cargarFichero(String path) {
-		
+
 		String contenidoficherocontokens = new String();
 
 		if (path != null) {
@@ -34,7 +35,8 @@ public class CargarFichero {
 			try {
 				bufferdelectura = new BufferedReader(new FileReader(path));
 				while (bufferdelectura.ready())
-					contenidoficherocontokens += bufferdelectura.readLine() + "\n";
+					contenidoficherocontokens += bufferdelectura.readLine()
+							+ "\n";
 
 			} catch (FileNotFoundException e) {
 				System.err.println(e + "\nArchivo no encontrado."
@@ -50,4 +52,3 @@ public class CargarFichero {
 		return new StringTokenizer(contenidoficherocontokens, "\n\t\r\f");
 	}
 }
-

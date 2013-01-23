@@ -1,7 +1,8 @@
 package salidaDeDatos;
 
 /**
- * Esta clase ha sido REUTILIZADA de la practica 1 'A first Approach to Cycling'
+ * Esta clase ha sido REUTILIZADA y EXTENDIDA de la practica 1 'A first Approach
+ * to Cycling'
  * 
  * @author Juan Carlos Marco Gonzalez
  * @author Juan Luis Perez Valbuena
@@ -22,35 +23,35 @@ public class SalidaDeDatos {
 		StringBuffer mensajefinal = new StringBuffer();
 
 		switch (formato) {
-			case "cadencia": {
-				mensajefinal.append(mensaje + " pedaladas por segundo ");
-				break;
-			}
-			case "velocidad": {
-				mensajefinal.append("Velocidad actual:" + mensaje + " m/s ");
-				break;
-			}
-	
-			case "hh:mm:ss": {
-				int i = 0;
-				while (i < mensaje.length()) {
-					if (mensaje.charAt(i) == ' ') {
-						mensajefinal.insert(i, ":");
-	
-					} else {
-						mensajefinal.insert(i, mensaje.charAt(i));
-					}
-	
-					i++;
-				}
-				break;
-				}
-								
-				
-				default:{ mensajefinal.append(mensaje);}
+		case "cadencia": {
+			mensajefinal.append(mensaje + " pedaladas por segundo ");
+			break;
 		}
-		
-		
+		case "velocidad": {
+			mensajefinal.append("Velocidad actual:" + mensaje + " m/s ");
+			break;
+		}
+
+		case "hh:mm:ss": {
+			int i = 0;
+			while (i < mensaje.length()) {
+				if (mensaje.charAt(i) == ' ') {
+					mensajefinal.insert(i, ":");
+
+				} else {
+					mensajefinal.insert(i, mensaje.charAt(i));
+				}
+
+				i++;
+			}
+			break;
+		}
+
+		default: {
+			mensajefinal.append(mensaje);
+		}
+		}
+
 		System.out.println(mensajefinal.toString());
 	}
 
@@ -67,75 +68,75 @@ public class SalidaDeDatos {
 		StringBuffer mensajefinal = new StringBuffer();
 		StringBuffer formato = new StringBuffer();
 		String cuerpomensaje = new String();
-		
+
 		int posicionempiezaformato = 0;
 
 		// buscamos la posicion a partir de la cual empieza el formato
 		while (posicionempiezaformato < mensaje.length()
 				&& mensaje.charAt(posicionempiezaformato) != '#') {
-			
+
 			posicionempiezaformato++;
 		}
-		
+
 		formato.append(mensaje.substring(posicionempiezaformato + 1).toString());
 		cuerpomensaje = mensaje.substring(0, posicionempiezaformato);
-		
+
 		// como ya sabemos donde empieza el formato, ahora
 		//
 		// comparamos para sacar la salida formateada
 		// con dicho formato
 		switch (formato.toString()) {
-		
-			case "cadencia": {
-				mensajefinal.append(" pedaladas por segundo ");
-				break;
-			}
-			case "velocidad": {
-				mensajefinal.append("Velocidad actual:").append(" m/s ");
-				break;
-			}
-			case "distancia": {
-				mensajefinal.append("Distancia recorrida:"
-						+ mensaje.substring(0, posicionempiezaformato) + " m ");
-				break;
-			}
-			case "hh:mm:ss": {
-				int caractermensaje = 0;
-				while (caractermensaje < posicionempiezaformato) {
-					if (mensaje.charAt(caractermensaje) == ' ') {
-						mensajefinal.insert(caractermensaje, ":");
-	
-					} else {
-						mensajefinal.insert(caractermensaje,
-								mensaje.charAt(caractermensaje));
-					}
-	
-					caractermensaje++;
-					break;
+
+		case "cadencia": {
+			mensajefinal.append(" pedaladas por segundo ");
+			break;
+		}
+		case "velocidad": {
+			mensajefinal.append("Velocidad actual:").append(" m/s ");
+			break;
+		}
+		case "distancia": {
+			mensajefinal.append("Distancia recorrida:"
+					+ mensaje.substring(0, posicionempiezaformato) + " m ");
+			break;
+		}
+		case "hh:mm:ss": {
+			int caractermensaje = 0;
+			while (caractermensaje < posicionempiezaformato) {
+				if (mensaje.charAt(caractermensaje) == ' ') {
+					mensajefinal.insert(caractermensaje, ":");
+
+				} else {
+					mensajefinal.insert(caractermensaje,
+							mensaje.charAt(caractermensaje));
 				}
-			}
-			case "iteration": {
-				mensajefinal.append("Iteracion nº:").append(cuerpomensaje);
-	
+
+				caractermensaje++;
 				break;
 			}
-			case "tabu": {
-				mensajefinal.append("TABU\n").append(cuerpomensaje);
-	
-				break;
-			}
-			case "NN": {
-				mensajefinal.append("NN = ").append(cuerpomensaje);
-				
-				break;
-			}
-			case "Best": {
-				mensajefinal.append("Best = ").append(cuerpomensaje);
-				break;
-			}
-			default: {
-				mensajefinal.append(cuerpomensaje);
-			}
+		}
+		case "iteration": {
+			mensajefinal.append("Iteracion nº:").append(cuerpomensaje);
+
+			break;
+		}
+		case "tabu": {
+			mensajefinal.append("TABU\n").append(cuerpomensaje);
+
+			break;
+		}
+		case "NN": {
+			mensajefinal.append("NN = ").append(cuerpomensaje);
+
+			break;
+		}
+		case "Best": {
+			mensajefinal.append("Best = ").append(cuerpomensaje);
+			break;
+		}
+		default: {
+			mensajefinal.append(cuerpomensaje);
+		}
 		}
 
 		System.out.println(mensajefinal.toString());
