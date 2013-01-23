@@ -249,9 +249,10 @@ public class SimpleACS {
 		SalidaDeDatos output = new SalidaDeDatos();
 		StringBuilder mensaje = new StringBuilder();
 
-		int tempTour[] = new int[numerodeciudades + 1];
-		int tempLength;
+		int tourtemporal[] = new int[numerodeciudades + 1];
+		int longituddeltourtemporal;
 
+		// Variables Cuyo significado se desconoce
 		double weights[] = new double[numerodeciudades];
 		double sigmaWeights;
 		double q, tempWeight, target;
@@ -262,7 +263,7 @@ public class SimpleACS {
 			visitadas[i] = false;
 		}
 
-		ultima = tempTour[0] = tempTour[numerodeciudades] = random
+		ultima = tourtemporal[0] = tourtemporal[numerodeciudades] = random
 				.nextInt(numerodeciudades);
 		visitadas[ultima] = true;
 
@@ -312,18 +313,18 @@ public class SimpleACS {
 
 			feromonas[ultima][siguiente] = feromonas[siguiente][ultima] = (1 - GAMMA)
 					* feromonas[ultima][siguiente] + GAMMA * TAUZERO;
-			tempTour[i] = ultima = siguiente;
+			tourtemporal[i] = ultima = siguiente;
 			visitadas[ultima] = true;
 		}
 
-		tempLength = calcularlongitudtour(tempTour);
+		longituddeltourtemporal = calcularlongitudtour(tourtemporal);
 
-		if (tempLength < mejorlongitudderecorrido) {
+		if (longituddeltourtemporal < mejorlongitudderecorrido) {
 
 			mensaje.delete(0, mensaje.length());
 
-			mejorrecorrido = tempTour;
-			mejorlongitudderecorrido = tempLength;
+			mejorrecorrido = tourtemporal;
+			mejorlongitudderecorrido = longituddeltourtemporal;
 
 			mensaje.append(mejorlongitudderecorrido).append("#Best");
 
