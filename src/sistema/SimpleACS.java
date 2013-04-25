@@ -25,15 +25,6 @@ public class SimpleACS {
 	// qZERO aparece en las linea 238
 	// Q aparece en la linea 201
 
-	private static final double BETA = 2, GAMMA = 0.1, qZERO = 0.9, Q = 1.0;
-
-	// M aparece en las lineas 181 y 189
-	// TMAX aparece en la linea 182
-	private static final int M = 2, TMAX = 50000;
-
-	// random aparece en las lineas 226, 238 y 256
-	// TAUZERO aparece en las lineas 133,174, 275
-	private static final Random random = new Random();
 	private double TAUZERO;
 
 	// Cantidad de ciudades a visitar.
@@ -169,7 +160,7 @@ public class SimpleACS {
 
 		for (int i = 0; i < numerodeciudades; i++) {
 			for (int j = 0; j < numerodeciudades; j++) {
-				visibilidad[i][j] = Math.pow(distancias[i][j], BETA);
+				visibilidad[i][j] = Math.pow(distancias[i][j], Constantes.BETA);
 			}
 		}
 	}
@@ -214,13 +205,13 @@ public class SimpleACS {
 
 		output.mostrarPorPantalla(mensaje.toString());
 	}
-
+/*
 	private void construirNuevoTour() {
 
 		SalidaDeDatos out = new SalidaDeDatos();
 		StringBuilder mensaje = new StringBuilder();
 
-		for (int t = 0; t < TMAX; t++) {
+		for (int t = 0; t < Constantes.TMAX; t++) {
 			if (t % 100 == 0) {
 				mensaje.delete(0, mensaje.length());
 
@@ -228,23 +219,23 @@ public class SimpleACS {
 				out.mostrarPorPantalla(mensaje.toString());
 			}
 
-			for (int k = 0; k < M; k++) {
+			for (int k = 0; k <  Constantes.M; k++) {
 				construirTour();
 			}
 
 			for (int i = 0; i < numerodeciudades; i++) {
-				feromonas[mejorrecorrido[i]][mejorrecorrido[i + 1]] = feromonas[mejorrecorrido[i + 1]][mejorrecorrido[i]] = (1 - GAMMA)
+				feromonas[mejorrecorrido[i]][mejorrecorrido[i + 1]] = feromonas[mejorrecorrido[i + 1]][mejorrecorrido[i]] = (1 -  Constantes.GAMMA)
 						* feromonas[mejorrecorrido[i]][mejorrecorrido[i + 1]]
-						+ GAMMA * (Q / mejorlongitudderecorrido);
+						+  Constantes.GAMMA * ( Constantes.Q / mejorlongitudderecorrido);
 			}
 		}
 	}
-
+*/
 	/**
 	 * Parte Principal de la ejecucion. Ejecucion del algoritmo de calculo del
 	 * ciclo hamiltoniano mediante feromonas de hormigas
 	 */
-	private void construirTour() {
+	/*private void construirTour() {
 
 		SalidaDeDatos output = new SalidaDeDatos();
 		StringBuilder mensaje = new StringBuilder();
@@ -263,7 +254,7 @@ public class SimpleACS {
 			visitadas[i] = false;
 		}
 
-		ultima = tourtemporal[0] = tourtemporal[numerodeciudades] = random
+		ultima = tourtemporal[0] = tourtemporal[numerodeciudades] =  Constantes.random
 				.nextInt(numerodeciudades);
 		visitadas[ultima] = true;
 
@@ -276,10 +267,10 @@ public class SimpleACS {
 					weights[j] = feromonas[ultima][j] + visibilidad[ultima][j];
 				}
 			}
-			q = random.nextDouble();
+			q =  Constantes.random.nextDouble();
 			siguiente = 0;
 
-			if (q <= qZERO) {
+			if (q <=  Constantes.qZERO) {
 				tempWeight = 0;
 
 				for (int j = 0; j < numerodeciudades; j++) {
@@ -294,7 +285,7 @@ public class SimpleACS {
 				for (int j = 0; j < numerodeciudades; j++)
 					sigmaWeights += weights[j];
 
-				target = random.nextDouble() * sigmaWeights;
+				target =  Constantes.random.nextDouble() * sigmaWeights;
 				tempWeight = 0;
 
 				for (int j = 0; j < numerodeciudades && tempWeight < target; j++) {
@@ -311,8 +302,8 @@ public class SimpleACS {
 				output.mostrarPorPantalla(mensaje.toString());
 			}
 
-			feromonas[ultima][siguiente] = feromonas[siguiente][ultima] = (1 - GAMMA)
-					* feromonas[ultima][siguiente] + GAMMA * TAUZERO;
+			feromonas[ultima][siguiente] = feromonas[siguiente][ultima] = (1 -  Constantes.GAMMA)
+					* feromonas[ultima][siguiente] +  Constantes.GAMMA * TAUZERO;
 			tourtemporal[i] = ultima = siguiente;
 			visitadas[ultima] = true;
 		}
@@ -331,7 +322,7 @@ public class SimpleACS {
 			output.mostrarPorPantalla(mensaje.toString());
 		}
 	}
-
+*/
 	/**
 	 * Recorre , elemento por elemento, un recorrido y devuelve la distancia
 	 * 
@@ -347,5 +338,13 @@ public class SimpleACS {
 		}
 
 		return length;
+	}
+
+	public int[] getMejorrecorrido() {
+		return mejorrecorrido;
+	}
+
+	public void setMejorrecorrido(int[] mejorrecorrido) {
+		this.mejorrecorrido = mejorrecorrido;
 	}
 }
