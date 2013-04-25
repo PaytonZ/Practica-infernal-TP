@@ -46,6 +46,8 @@ public class SimpleACS {
 
 	// Se usa para indicar de forma rapida la distancia del ciclo
 	private int tourbasico[];
+	
+	private Runnable hormigas;
 
 	/**
 	 * <p>
@@ -93,6 +95,8 @@ public class SimpleACS {
 		mejorrecorrido = new int[numerodeciudades];
 		visitadas = new boolean[numerodeciudades];
 
+		hormigas = new Runnable();
+		
 		generarTour();
 		inicioFeromonasYvisibilidad();
 	}
@@ -102,8 +106,10 @@ public class SimpleACS {
 	 * preparados.
 	 */
 	public void ejecutar() {
-
-		construirNuevoTour();
+		for (int t = 0; t < Constantes.TMAX; t++) {
+		
+		}
+	
 	}
 
 	/**

@@ -13,9 +13,13 @@ public class HormigaHilo extends Thread {
 	private int mejorrecorrido[];
 	private int mejorlongitudderecorrido = Integer.MAX_VALUE;
 	private boolean visitadas[];
-	public void run() {
+	
+	private double TAUZERO;
+	
+	public void run(double nuevo_TAUZERO) {
         
-		
+		TAUZERO=nuevo_TAUZERO;
+		construirNuevoTour();
 		
     }
 	
@@ -23,13 +27,13 @@ public class HormigaHilo extends Thread {
 				SalidaDeDatos out = new SalidaDeDatos();
 				StringBuilder mensaje = new StringBuilder();
 
-				for (int t = 0; t < Constantes.TMAX; t++) {
+			/*	for (int t = 0; t < Constantes.TMAX; t++) {
 					if (t % 100 == 0) {
 						mensaje.delete(0, mensaje.length());
 
 						mensaje.append(t).append("#iteration");
 						out.mostrarPorPantalla(mensaje.toString());
-					}
+				*/	
 
 					for (int k = 0; k <  Constantes.M; k++) {
 						construirTour();
@@ -39,8 +43,11 @@ public class HormigaHilo extends Thread {
 						feromonas[mejorrecorrido[i]][mejorrecorrido[i + 1]] = feromonas[mejorrecorrido[i + 1]][mejorrecorrido[i]] = (1 -  Constantes.GAMMA)
 								* feromonas[mejorrecorrido[i]][mejorrecorrido[i + 1]]
 								+  Constantes.GAMMA * ( Constantes.Q / mejorlongitudderecorrido);
-			}
 			
+			
+				}
+		
+			}
 			private void construirTour() {
 
 				SalidaDeDatos output = new SalidaDeDatos();
@@ -137,5 +144,6 @@ public class HormigaHilo extends Thread {
 
 				return length;
 			}
+
 }
 
