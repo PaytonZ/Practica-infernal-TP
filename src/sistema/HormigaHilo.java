@@ -2,7 +2,7 @@ package sistema;
 
 import salidaDeDatos.SalidaDeDatos;
 
-public class HormigaHilo extends Thread {
+public class HormigaHilo implements Runnable{
 
 	private int numerodeciudades;
 
@@ -14,8 +14,13 @@ public class HormigaHilo extends Thread {
 	private int mejorlongitudderecorrido = Integer.MAX_VALUE;
 	private boolean visitadas[];
 	
-	private double TAUZERO;
+	private double TAUZERO=1;
 	
+	public void run(){
+	
+		run(TAUZERO);
+	
+	}
 	public void run(double nuevo_TAUZERO) {
         
 		TAUZERO=nuevo_TAUZERO;

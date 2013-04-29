@@ -47,7 +47,7 @@ public class SimpleACS {
 	// Se usa para indicar de forma rapida la distancia del ciclo
 	private int tourbasico[];
 	
-	private Runnable hormigas;
+	private HormigaHilo hormigas;
 
 	/**
 	 * <p>
@@ -94,8 +94,9 @@ public class SimpleACS {
 		// Se contruyen las matrices necesarias a partir del número de ciudades
 		mejorrecorrido = new int[numerodeciudades];
 		visitadas = new boolean[numerodeciudades];
-
-		hormigas = new Runnable();
+		
+		// La clase hormiga debe implementar el interfaz Runnable que obliga a la sobreescritura del método run
+		//hormigas = new Runnable();
 		
 		generarTour();
 		inicioFeromonasYvisibilidad();
@@ -106,8 +107,10 @@ public class SimpleACS {
 	 * preparados.
 	 */
 	public void ejecutar() {
+		Thread p;
 		for (int t = 0; t < Constantes.TMAX; t++) {
-		
+			p=new Thread(hormigas);
+			p.start();
 		}
 	
 	}
