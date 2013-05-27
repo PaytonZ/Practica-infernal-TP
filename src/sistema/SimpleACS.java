@@ -109,10 +109,10 @@ public class SimpleACS {
 	public void ejecutar() {
 		Thread p;
 		for (int t = 0; t < Constantes.TMAX; t++) {
+		
 			p=new Thread(hormigas);
 			p.start();
 		}
-	
 	}
 
 	/**

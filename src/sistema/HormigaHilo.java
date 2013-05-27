@@ -9,12 +9,13 @@ public class HormigaHilo implements Runnable{
 	// TODO falta comentar estas variables
 	private int distancias[][];
 	private double visibilidad[][];
-	private double feromonas[][];
-	private int mejorrecorrido[];
-	private int mejorlongitudderecorrido = Integer.MAX_VALUE;
+
+	
 	private boolean visitadas[];
 	
 	private double TAUZERO=1;
+	
+	
 	
 	public void run(){
 	
@@ -25,6 +26,7 @@ public class HormigaHilo implements Runnable{
         
 		TAUZERO=nuevo_TAUZERO;
 		construirNuevoTour();
+		System.out.println(getMejorlongitudderecorrido());
 		
     }
 	
@@ -149,6 +151,11 @@ public class HormigaHilo implements Runnable{
 
 				return length;
 			}
-
+			/**
+			 * @return the mejorlongitudderecorrido
+			 */
+			public int getMejorlongitudderecorrido() {
+				return mejorlongitudderecorrido;
+			}
 }
 
