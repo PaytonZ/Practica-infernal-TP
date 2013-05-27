@@ -1,359 +1,256 @@
 package sistema;
 
-import inicio.CargarFichero;
-import inicio.CrearMatrices;
 
-import java.util.Random;
-import java.util.StringTokenizer;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import salidaDeDatos.SalidaDeDatos;
+import cern.jet.random.Uniform;
 
-/**
- * Clase que resuleve el problema del viajante mediante feromonas de hormigas
- * 
- * @author Juan Luis Perez Valbuena
- * @author Alvaro Quesada Pimentel
- * @author Juan Carlos Marco Gonzalez
- * @author Daniel Serrano Torres
- */
-public class SimpleACS {
+public final class SimpleACS {
 
-	// Variables de cuyo significado se desconoce.
+	// greedy
+	public static final double ALPHA = -0.2d;
+	// rapid selection
+	public static final double BETA = 9.6d;
 
-	// BETA aparece en la linea 133
-	// GAMMA aparece en las lineas 197, 199, 269 y 270
-	// qZERO aparece en las linea 238
-	// Q aparece en la linea 201
+	// heuristic parameters
+	public static final double Q = 0.0001d; // somewhere between 0 and 1
+	public static final double PHEROMONE_PERSISTENCE = 0.3d; // between 0 and 1
+	public static final double INITIAL_PHEROMONES = 0.8d; // can be anything
 
-	private double TAUZERO;
+	// use power of 2
+	public static final int numOfAgents = 2048 * 20;
+	private static final int poolSize = Runtime.getRuntime().availableProcessors();
 
-	// Cantidad de ciudades a visitar.
-	private int numerodeciudades;
+	private Uniform uniform;
 
-	// TODO falta comentar estas variables
-	private int distancias[][];
-	private double visibilidad[][];
-	private double feromonas[][];
+	private final ExecutorService threadPool = Executors.newFixedThreadPool(poolSize);
 
-	// Mejor ruta hasta el momento
-	private int mejorrecorrido[];
+	private final ExecutorCompletionService<WalkedWay> agentCompletionService = new ExecutorCompletionService<WalkedWay>(
+			threadPool);
 
-	// Longitud de la mejor ruta hasta el momento
-	private int mejorlongitudderecorrido = Integer.MAX_VALUE;
+	final double[][] matrix;
+	final double[][] invertedMatrix;
+	private final double[][] pheromones;
+	private final Object[][] mutexes;
 
-	// Lista de ciudades que la hormiga tiene que visitar para realizar un tour.
-	private boolean visitadas[];
-
-	// Se usa para indicar de forma rapida la distancia del ciclo
-	private int tourbasico[];
-	
-	private HormigaHilo hormigas;
-
-	/**
-	 * <p>
-	 * En este método se realizan las siguientes funcionalidades de la
-	 * aplicación.
-	 * </p>
-	 * <p>
-	 * 1- Se abre el fichero y se genera , segun la entrada del mismo , una
-	 * matriz para poder trabajar con ella.
-	 * </p>
-	 * <p>
-	 * 2- Se inician variables como el numero de ciudades , la mejor ruta , y
-	 * las ciudades visitadas.
-	 * </p>
-	 * <p>
-	 * 3- Se genera un tour inicial basandose en la proximidad de las ciudades.
-	 * </p>
-	 * <p>
-	 * 4- Se inician las feromonas y las visibilidad.
-	 * </p>
-	 * <p>
-	 * 5- El metodo ha dejado todas las variables listas para poder proceder al
-	 * metodo ejecuta.
-	 * </p>
-	 * 
-	 * @param ficheroaabrir
-	 *            Ruta del fichero que se va a leer
-	 */
-	public void iniciar(String ficheroaabrir) {
-
-		CargarFichero cargarfichero = new CargarFichero();
-		CrearMatrices creadormatrices = new CrearMatrices();
-
-		StringTokenizer contenidofechero = cargarfichero
-				.cargarFichero(ficheroaabrir);
-
-		// Se genera una matriz con la clase creadormatrices que decidira
-		// dependiendo de la entrada la matriz a crear adecuada
-		distancias = creadormatrices.generarMatriz(contenidofechero);
-
-		// Obtención del número de ciudades a partir del tamaño de la matriz
-		numerodeciudades = distancias.length;
-
-		// Se contruyen las matrices necesarias a partir del número de ciudades
-		mejorrecorrido = new int[numerodeciudades];
-		visitadas = new boolean[numerodeciudades];
-		
-		// La clase hormiga debe implementar el interfaz Runnable que obliga a la sobreescritura del método run
-		//hormigas = new Runnable();
-		
-		generarTour();
-		inicioFeromonasYvisibilidad();
+	public SimpleACS() throws IOException {
+		// read the matrix
+		matrix = readMatrixFromFile();
+		invertedMatrix = invertMatrix();
+		pheromones = initializePheromones();
+		mutexes = initializeMutexObjects();
+		// (double min, double max, int seed)
+		uniform = new Uniform(0, matrix.length - 1, (int) System.currentTimeMillis());
 	}
 
-	/**
-	 * En este método se lanza el algoritmo cuando dispone de todos los datos
-	 * preparados.
-	 */
-	public void ejecutar() {
-		Thread p;
-		for (int t = 0; t < Constantes.TMAX; t++) {
-		
-			p=new Thread(hormigas);
-			p.start();
-		}
-	}
-
-	/**
-	 * Método que se ejecuta cuando finaliza todo el proceso del sistema y se va
-	 * a mostrar la salida de datos. Realiza lo siguiente
-	 * <p>
-	 * 1- Muestra en unidades de medida la longitud de la ruta mejor obtenida
-	 * por el algoritmo
-	 * </p>
-	 * <p>
-	 * 2- Muestra el recorrido completo , indicando , por identificador de
-	 * ciudad , el mismo.
-	 * </p>
-	 */
-	public void finalizar() {
-
-		mostrarMejorRuta();
-	}
-
-	/**
-	 * Clase que muestra por pantalla los resultados obtenidos del algoritmo
-	 */
-	private void mostrarMejorRuta() {
-		SalidaDeDatos output = new SalidaDeDatos();
-		StringBuilder mensaje = new StringBuilder();
-
-		mensaje.append(mejorlongitudderecorrido);
-
-		output.mostrarPorPantalla(mensaje.toString(), "#defecto");
-
-		// Limpia el buffer completo para crear un nuevo mensaje
-		// reusando el objeto salida de datos.
-		mensaje.delete(0, mensaje.length());
-
-		for (int i = 0; i < numerodeciudades + 1; i++) {
-
-			mensaje.append(mejorrecorrido[i]).append(" ");
-		}
-		output.mostrarPorPantalla(mensaje.toString(), "#defecto");
-	}
-
-	/**
-	 * En este método se inicializan las feromonas al valor TAUZERO y la
-	 * visibilidad se inicia al valor de las distancias elevado a un cierto
-	 * valor BETA.
-	 */
-	private void inicioFeromonasYvisibilidad() {
-
-		for (int i = 0; i < numerodeciudades; i++) {
-			for (int j = 0; j < numerodeciudades; j++) {
-				feromonas[i][j] = TAUZERO;
+	private final Object[][] initializeMutexObjects() {
+		final Object[][] localMatrix = new Object[matrix.length][matrix.length];
+		int rows = matrix.length;
+		for (int columns = 0; columns < matrix.length; columns++) {
+			for (int i = 0; i < rows; i++) {
+				localMatrix[columns][i] = new Object();
 			}
 		}
 
-		for (int i = 0; i < numerodeciudades; i++) {
-			for (int j = 0; j < numerodeciudades; j++) {
-				visibilidad[i][j] = Math.pow(distancias[i][j], Constantes.BETA);
-			}
-		}
+		return localMatrix;
 	}
 
-	/**
-	 * Se genera una ruta inicial basandose en la proximidad de unas ciudades
-	 * con otras ( ruta no óptima ).
-	 */
-	private void generarTour() {
-
-		tourbasico = new int[numerodeciudades + 1];
-		feromonas = new double[numerodeciudades][numerodeciudades];
-		visibilidad = new double[numerodeciudades][numerodeciudades];
-
-		tourbasico[0] = tourbasico[numerodeciudades] = 0;
-		visitadas[0] = true;
-
-		for (int i = 1; i < numerodeciudades; i++) {
-			int mascercano = 0;
-
-			for (int j = 0; j < numerodeciudades; j++) {
-				if (!visitadas[j]
-						&& (mascercano == 0 || distancias[tourbasico[i]][j] < distancias[i][mascercano])) {
-					mascercano = j;
-				}
-			}
-
-			tourbasico[i] = mascercano;
-			visitadas[mascercano] = true;
-		}
-
-		mejorrecorrido = tourbasico;
-
-		mejorlongitudderecorrido = calcularlongitudtour(tourbasico);
-
-		TAUZERO = 1.0 / (numerodeciudades - mejorlongitudderecorrido);
-
-		SalidaDeDatos output = new SalidaDeDatos();
-		StringBuilder mensaje = new StringBuilder();
-
-		mensaje.append(mejorlongitudderecorrido).append("#NN");
-
-		output.mostrarPorPantalla(mensaje.toString());
+	final double readPheromone(int x, int y) {
+		// double p;
+		// synchronized (mutexes[x][y]) {
+		// p = pheromones[x][y];
+		// }
+		// return p;
+		return pheromones[x][y];
 	}
-/*
-	private void construirNuevoTour() {
 
-		SalidaDeDatos out = new SalidaDeDatos();
-		StringBuilder mensaje = new StringBuilder();
-
-		for (int t = 0; t < Constantes.TMAX; t++) {
-			if (t % 100 == 0) {
-				mensaje.delete(0, mensaje.length());
-
-				mensaje.append(t).append("#iteration");
-				out.mostrarPorPantalla(mensaje.toString());
-			}
-
-			for (int k = 0; k <  Constantes.M; k++) {
-				construirTour();
-			}
-
-			for (int i = 0; i < numerodeciudades; i++) {
-				feromonas[mejorrecorrido[i]][mejorrecorrido[i + 1]] = feromonas[mejorrecorrido[i + 1]][mejorrecorrido[i]] = (1 -  Constantes.GAMMA)
-						* feromonas[mejorrecorrido[i]][mejorrecorrido[i + 1]]
-						+  Constantes.GAMMA * ( Constantes.Q / mejorlongitudderecorrido);
-			}
-		}
-	}
-*/
-	/**
-	 * Parte Principal de la ejecucion. Ejecucion del algoritmo de calculo del
-	 * ciclo hamiltoniano mediante feromonas de hormigas
-	 */
-	/*private void construirTour() {
-
-		SalidaDeDatos output = new SalidaDeDatos();
-		StringBuilder mensaje = new StringBuilder();
-
-		int tourtemporal[] = new int[numerodeciudades + 1];
-		int longituddeltourtemporal;
-
-		// Variables Cuyo significado se desconoce
-		double weights[] = new double[numerodeciudades];
-		double sigmaWeights;
-		double q, tempWeight, target;
-
-		int ultima, siguiente;
-
-		for (int i = 0; i < numerodeciudades; i++) {
-			visitadas[i] = false;
-		}
-
-		ultima = tourtemporal[0] = tourtemporal[numerodeciudades] =  Constantes.random
-				.nextInt(numerodeciudades);
-		visitadas[ultima] = true;
-
-		for (int i = 1; i < numerodeciudades; i++) {
-			for (int j = 0; j < numerodeciudades; j++) {
-
-				if (visitadas[j] == true) {
-					weights[j] = 0;
-				} else {
-					weights[j] = feromonas[ultima][j] + visibilidad[ultima][j];
-				}
-			}
-			q =  Constantes.random.nextDouble();
-			siguiente = 0;
-
-			if (q <=  Constantes.qZERO) {
-				tempWeight = 0;
-
-				for (int j = 0; j < numerodeciudades; j++) {
-					if (weights[j] > tempWeight) {
-						tempWeight = weights[j];
-						siguiente = j;
-					}
-				}
+	final void adjustPheromone(int x, int y, double newPheromone) {
+		synchronized (mutexes[x][y]) {
+			final double result = calculatePheromones(pheromones[x][y], newPheromone);
+			if (result >= 0.0d) {
+				pheromones[x][y] = result;
 			} else {
-				sigmaWeights = 0;
+				pheromones[x][y] = 0;
+			}
+		}
+	}
 
-				for (int j = 0; j < numerodeciudades; j++)
-					sigmaWeights += weights[j];
+	private final double calculatePheromones(double current, double newPheromone) {
+		final double result = (1 - SimpleACS.PHEROMONE_PERSISTENCE) * current
+				+ newPheromone;
+		return result;
+	}
 
-				target =  Constantes.random.nextDouble() * sigmaWeights;
-				tempWeight = 0;
+	final void adjustPheromone(int[] way, double newPheromone) {
+		synchronized (pheromones) {
+			for (int i = 0; i < way.length - 1; i++) {
+				pheromones[way[i]][way[i + 1]] = calculatePheromones(
+						pheromones[way[i]][way[i + 1]], newPheromone);
+			}
+			pheromones[way[way.length - 1]][way[0]] = calculatePheromones(
+					pheromones[way.length - 1][way[0]], newPheromone);
+		}
+	}
 
-				for (int j = 0; j < numerodeciudades && tempWeight < target; j++) {
-					tempWeight += weights[j];
+	private final double[][] initializePheromones() {
+		final double[][] localMatrix = new double[matrix.length][matrix.length];
+		int rows = matrix.length;
+		for (int columns = 0; columns < matrix.length; columns++) {
+			for (int i = 0; i < rows; i++) {
+				localMatrix[columns][i] = INITIAL_PHEROMONES;
+			}
+		}
 
-					if (tempWeight >= target) {
-						siguiente = j;
-					}
+		return localMatrix;
+	}
+
+	private final double[][] readMatrixFromFile() throws IOException {
+
+		final BufferedReader br = new BufferedReader(new FileReader(new File("berlin52.tsp")));
+
+		final LinkedList<Record> records = new LinkedList<Record>();
+
+		boolean readAhead = false;
+		String line;
+		while ((line = br.readLine()) != null) {
+
+			if (line.equals("EOF")) {
+				break;
+			}
+
+			if (readAhead) {
+				String[] split = line.trim().split(" ");
+				records.add(new Record(Double.parseDouble(split[1].trim()), Double
+						.parseDouble(split[2].trim())));
+			}
+
+
+			if (line.equals("NODE_COORD_SECTION")) {
+				readAhead = true;
+			}
+		}
+
+		br.close();
+
+		final double[][] localMatrix = new double[records.size()][records.size()];
+
+		int rIndex = 0;
+		for (Record r : records) {
+			int hIndex = 0;
+			for (Record h : records) {
+				localMatrix[rIndex][hIndex] = calculateEuclidianDistance(r.x, r.y, h.x, h.y);
+				hIndex++;
+			}
+			rIndex++;
+		}
+
+		return localMatrix;
+	}
+
+	private final double[][] invertMatrix() {
+		double[][] local = new double[matrix.length][matrix.length];
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix.length; j++) {
+				local[i][j] = invertDouble(matrix[i][j]);
+			}
+		}
+		return local;
+	}
+
+	private final double invertDouble(double distance) {
+		if (distance == 0)
+			return 0;
+		else
+			return 1.0d / distance;
+	}
+
+	private final double calculateEuclidianDistance(double x1, double y1, double x2, double y2) {
+		return Math.abs((Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))));
+	}
+
+	final double start() throws InterruptedException, ExecutionException {
+
+		WalkedWay bestDistance = null;
+
+		int agentsSend = 0;
+		int agentsDone = 0;
+		int agentsWorking = 0;
+		for (int agentNumber = 0; agentNumber < numOfAgents; agentNumber++) {
+			agentCompletionService.submit(new Agente(this, getGaussianDistributionRowIndex()));
+			agentsSend++;
+			agentsWorking++;
+			while (agentsWorking >= poolSize) {
+				WalkedWay way = agentCompletionService.take().get();
+				if (bestDistance == null || way.distance < bestDistance.distance) {
+					bestDistance = way;
+					System.out.println("Agent returned with new best distance of: " + way.distance);
 				}
+				agentsDone++;
+				agentsWorking--;
 			}
+		}
+		final int left = agentsSend - agentsDone;
+		System.out.println("Waiting for " + left + " agents to finish their random walk!");
 
-			if (visitadas[siguiente] == true) {
-				mensaje.append(siguiente).append("#tabu");
-				output.mostrarPorPantalla(mensaje.toString());
+		for (int i = 0; i < left; i++) {
+			WalkedWay way = agentCompletionService.take().get();
+			if (bestDistance == null || way.distance < bestDistance.distance) {
+				bestDistance = way;
+				System.out.println("Agent returned with new best distance of: " + way.distance);
 			}
-
-			feromonas[ultima][siguiente] = feromonas[siguiente][ultima] = (1 -  Constantes.GAMMA)
-					* feromonas[ultima][siguiente] +  Constantes.GAMMA * TAUZERO;
-			tourtemporal[i] = ultima = siguiente;
-			visitadas[ultima] = true;
 		}
 
-		longituddeltourtemporal = calcularlongitudtour(tourtemporal);
+		threadPool.shutdownNow();
+		System.out.println("Found best so far: " + bestDistance.distance);
+		System.out.println(Arrays.toString(bestDistance.way));
 
-		if (longituddeltourtemporal < mejorlongitudderecorrido) {
+		return bestDistance.distance;
 
-			mensaje.delete(0, mensaje.length());
+	}
 
-			mejorrecorrido = tourtemporal;
-			mejorlongitudderecorrido = longituddeltourtemporal;
+	private final int getGaussianDistributionRowIndex() {
+		return uniform.nextInt();
+	}
 
-			mensaje.append(mejorlongitudderecorrido).append("#Best");
+	static class Record {
+		double x;
+		double y;
 
-			output.mostrarPorPantalla(mensaje.toString());
+		public Record(double x, double y) {
+			super();
+			this.x = x;
+			this.y = y;
 		}
 	}
-*/
-	/**
-	 * Recorre , elemento por elemento, un recorrido y devuelve la distancia
-	 * 
-	 * @param tour
-	 *            El recorrido
-	 * @return La distania en unidades de medida del recorrido
-	 */
-	private int calcularlongitudtour(int tour[]) {
-		int length = 0;
 
-		for (int i = 0; i < numerodeciudades; i++) {
-			length += distancias[tour[i]][tour[i + 1]];
+	static class WalkedWay {
+		int[] way;
+		double distance;
+
+		public WalkedWay(int[] way, double distance) {
+			super();
+			this.way = way;
+			this.distance = distance;
 		}
-
-		return length;
 	}
 
-	public int[] getMejorrecorrido() {
-		return mejorrecorrido;
+	public static void main(String[] args) throws IOException, InterruptedException,
+			ExecutionException {
+
+		long start = System.currentTimeMillis();
+		SimpleACS antColonyOptimization = new SimpleACS();
+		antColonyOptimization.start();
+		System.out.println("Took: " + (System.currentTimeMillis() - start) + " ms!");
 	}
 
-	public void setMejorrecorrido(int[] mejorrecorrido) {
-		this.mejorrecorrido = mejorrecorrido;
-	}
 }
+ 

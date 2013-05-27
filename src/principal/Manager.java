@@ -24,8 +24,8 @@ public class Manager {
 
 		SimpleACS main = new SimpleACS();
 
-		main.iniciar(ficheroaabrir);
-		main.ejecutar();
-		main.finalizar();
+	//	main.iniciar(ficheroaabrir);
+	//	main.ejecutar();
+	//	main.finalizar();
 	}
 }

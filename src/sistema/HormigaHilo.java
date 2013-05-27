@@ -4,8 +4,6 @@ import salidaDeDatos.SalidaDeDatos;
 
 public class HormigaHilo implements Runnable{
 
-	private int numerodeciudades;
-
 	// TODO falta comentar estas variables
 	private int distancias[][];
 	private double visibilidad[][];
@@ -13,8 +11,42 @@ public class HormigaHilo implements Runnable{
 	
 	private boolean visitadas[];
 	
+	
+	private double feromonas[][];
+	private int mejorrecorrido[];
+	private int mejorlongitudderecorrido = Integer.MAX_VALUE;
+	private int numerodeciudades;
+	
+
+	
 	private double TAUZERO=1;
 	
+	
+	private void construirNuevoTour() {
+		SalidaDeDatos out = new SalidaDeDatos();
+		StringBuilder mensaje = new StringBuilder();
+
+	/*	for (int t = 0; t < Constantes.TMAX; t++) {
+			if (t % 100 == 0) {
+				mensaje.delete(0, mensaje.length());
+
+				mensaje.append(t).append("#iteration");
+				out.mostrarPorPantalla(mensaje.toString());
+		*/	
+
+			for (int k = 0; k <  Constantes.M; k++) {
+				construirTour();
+			}
+
+			for (int i = 0; i < numerodeciudades; i++) {
+				feromonas[mejorrecorrido[i]][mejorrecorrido[i + 1]] = feromonas[mejorrecorrido[i + 1]][mejorrecorrido[i]] = (1 -  Constantes.GAMMA)
+						* feromonas[mejorrecorrido[i]][mejorrecorrido[i + 1]]
+						+  Constantes.GAMMA * ( Constantes.Q / mejorlongitudderecorrido);
+	
+	
+		}
+
+	}
 	
 	
 	public void run(){
@@ -30,31 +62,7 @@ public class HormigaHilo implements Runnable{
 		
     }
 	
-			private void construirNuevoTour() {
-				SalidaDeDatos out = new SalidaDeDatos();
-				StringBuilder mensaje = new StringBuilder();
-
-			/*	for (int t = 0; t < Constantes.TMAX; t++) {
-					if (t % 100 == 0) {
-						mensaje.delete(0, mensaje.length());
-
-						mensaje.append(t).append("#iteration");
-						out.mostrarPorPantalla(mensaje.toString());
-				*/	
-
-					for (int k = 0; k <  Constantes.M; k++) {
-						construirTour();
-					}
-
-					for (int i = 0; i < numerodeciudades; i++) {
-						feromonas[mejorrecorrido[i]][mejorrecorrido[i + 1]] = feromonas[mejorrecorrido[i + 1]][mejorrecorrido[i]] = (1 -  Constantes.GAMMA)
-								* feromonas[mejorrecorrido[i]][mejorrecorrido[i + 1]]
-								+  Constantes.GAMMA * ( Constantes.Q / mejorlongitudderecorrido);
-			
-			
-				}
 		
-			}
 			private void construirTour() {
 
 				SalidaDeDatos output = new SalidaDeDatos();

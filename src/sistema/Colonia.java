@@ -1,11 +1,7 @@
 package sistema;
 
-public class Colonia {
-	private double feromonas[][];
-	private int mejorrecorrido[];
-	private int mejorlongitudderecorrido = Integer.MAX_VALUE;
-	
+import salidaDeDatos.SalidaDeDatos;
 
+public class Colonia {
 	
-	private double TAUZERO=1;
 }
