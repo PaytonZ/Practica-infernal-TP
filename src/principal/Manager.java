@@ -1,5 +1,7 @@
 package principal;
 
+import java.io.IOException;
+
 import sistema.SimpleACS;
 
 /**
@@ -22,7 +24,12 @@ public class Manager {
 
 		String ficheroaabrir = "eil51.tsp";
 
-		SimpleACS main = new SimpleACS();
+		try {
+			SimpleACS main = new SimpleACS();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	//	main.iniciar(ficheroaabrir);
 	//	main.ejecutar();
