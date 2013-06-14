@@ -24,13 +24,10 @@ public class Manager {
 	public static void main(String args[]) {
 
 		String ficheroaabrir = "eil51.tsp";
-
+		//Crea el Optimizador, lo inicializa y lo ejecuta
 		Optimizador sistema= new Optimizador();
 		sistema.iniciar(ficheroaabrir);
 		sistema.ejecutar();
 
-	//	main.iniciar(ficheroaabrir);
-	//	main.ejecutar();
-	//	main.finalizar();
 	}
 }

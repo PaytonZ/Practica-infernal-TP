@@ -20,12 +20,6 @@ import salidaDeDatos.SalidaDeDatos;
 public class Optimizador {
 
 	// Variables de cuyo significado se desconoce.
-
-	// BETA aparece en la linea 133
-	// GAMMA aparece en las lineas 197, 199, 269 y 270
-	// qZERO aparece en las linea 238
-	// Q aparece en la linea 201
-
 	private double TAUZERO;
 
 	// Cantidad de ciudades a visitar.
@@ -44,18 +38,21 @@ public class Optimizador {
 
 
 	// Se usa para indicar de forma rapida la distancia del ciclo
-	private int tourbasico[];
+	//private int tourbasico[];
 	
-	// use power of 2
-	public static final int numDeHormigas = 2048 * 20;
-	private static final int tamañoLWP = Runtime.getRuntime().availableProcessors();
+	//Variables de hilos
+	public static final int numDeHormigas = 50000; //Número de hormigas que se va na ejecutar
+	private static final int tamañoLWP = Runtime.getRuntime().availableProcessors();//Disponibilidad de procesadores
 
-	private int hormigasViaje=0;
-	private int hormigasEspera=numDeHormigas;
+	private int hormigasViaje=0;// Numero de hormigas en ejecucion
+	private int hormigasEspera=numDeHormigas; //Numero de hormigas en espera para ejecutarse
 	
 	
-	public void iniciar(String ficheroaabrir) {
-
+	/** Inicia los datos de la clase para su ejecucion.
+	 * @param ficheroaabrir
+	 */
+	public void iniciar(String ficheroaabrir) { 
+		
 		CargarFichero cargarfichero = new CargarFichero();
 		CrearMatrices creadormatrices = new CrearMatrices();
 
@@ -71,43 +68,38 @@ public class Optimizador {
 
 		// Se contruyen las matrices necesarias a partir del número de ciudades
 		mejorrecorrido = new int[numerodeciudades];
+		
+		// Cread mediante un algoritmo voraz una solucion a priori no optima con la que 
+		// comparar el resto de soluciones
 		generarTour();
 		
-		// La clase hormiga debe implementar el interfaz Runnable que obliga a la sobreescritura del método run
-		//hormigas = new Runnable();
-		
-		
+		// Inicia las feromonas a un determinado valor
 		inicioFeromonasYvisibilidad();
 	}
 
 	/**
-	 * En este método se lanza el algoritmo cuando dispone de todos los datos
-	 * preparados.
+	 * Instancia hormigas nuevas siempre que no se haya llegado al limite.
 	 */
 	public void ejecutar() {
+		
 		for(int i=hormigasViaje;i<tamañoLWP&&hormigasEspera>0;i++){
+			// Crea una hormiga nueva y la ejecuta, aumentando el contador de hormigas en ejecucion
+			// y disminuyendo el de hormigas en espera
 			Thread hilo = new Thread(new Hormiga(this,numerodeciudades,feromonas,TAUZERO,visibilidad));
 			hilo.start();
 			hormigasViaje++;
 			hormigasEspera--;
+			
 		}
 	}
 
 	/**
-	 * Método que se ejecuta cuando finaliza todo el proceso del sistema y se va
-	 * a mostrar la salida de datos. Realiza lo siguiente
-	 * <p>
-	 * 1- Muestra en unidades de medida la longitud de la ruta mejor obtenida
-	 * por el algoritmo
-	 * </p>
-	 * <p>
-	 * 2- Muestra el recorrido completo , indicando , por identificador de
-	 * ciudad , el mismo.
-	 * </p>
+	 * Metodo que se ejecuta al finalizar la aplicación.
 	 */
 	public void finalizar() {
 
 		mostrarMejorRuta();
+		
 	}
 
 	/**
@@ -128,51 +120,62 @@ public class Optimizador {
 	}
 
 	public int[] getMejorrecorrido() {
+		
 		return mejorrecorrido;
+		
 	}
 
+	/**
+	 * Actualiza el mejor recorrido obtenido hasta ahora si el recorrido por parametro
+	 * tiene una longitud menor.
+	 * @param recorrido
+	 */
 	public synchronized void setMejorrecorrido(int[] recorrido) {
+		
 		int longitudRecorrido=calcularlongitudtour(recorrido);
+		
 		if(longitudRecorrido<mejorlongitudderecorrido){
 			this.mejorrecorrido =recorrido;
 			mejorlongitudderecorrido=longitudRecorrido;
 		}
 		
 	}
-	
-	private void mostrarMejorRuta() {
-		SalidaDeDatos output = new SalidaDeDatos();
-		StringBuilder mensaje = new StringBuilder();
-
-		mensaje.append(mejorlongitudderecorrido);
-
-		output.mostrarPorPantalla(mensaje.toString(), "#defecto");
-
-		// Limpia el buffer completo para crear un nuevo mensaje
-		// reusando el objeto salida de datos.
-		mensaje.delete(0, mensaje.length());
-
-		for (int i = 0; i < numerodeciudades + 1; i++) {
-
-			mensaje.append(mejorrecorrido[i]).append(" ");
-		}
-		output.mostrarPorPantalla(mensaje.toString(), "#defecto");
+	private void setFeromonas(double[][] feromonas) {
+		this.feromonas=feromonas;
 	}
 	
-	public synchronized void finalizacionHormiga(int[] recorrido){
+	
+	
+	/** Metodo que invocan las hormigas al acabar su ejecucion para comunicarselo al Optimizador
+	 * @param recorrido
+	 */
+	public synchronized void finalizacionHormiga(int[] recorrido,double feromonas[][]){
+		
+		//Muestra la distancia del recorrido de la hormiga
+		System.out.println("Ha vuelto una hormiga con un recorrido de "+calcularlongitudtour(recorrido));
+		//Intenta actualizar el mejor recorrido con el que ha hecho la hormiga
 		setMejorrecorrido(recorrido);
+		//Actualiza las feromonas con las que ha puesto la hormiga
+		setFeromonas(feromonas);
+		//Actualiza las feromonas repecto del mejor recorrido
 		for (int i = 0; i < numerodeciudades; i++) {
 			feromonas[mejorrecorrido[i]][mejorrecorrido[i + 1]] = feromonas[mejorrecorrido[i + 1]][mejorrecorrido[i]] = (1 -  Constantes.GAMMA)
 					* feromonas[mejorrecorrido[i]][mejorrecorrido[i + 1]]
 					+  Constantes.GAMMA * ( Constantes.Q / mejorlongitudderecorrido);
 		}
+		// Se desapunta del contador de hormigas en ejecucion
 		hormigasViaje--;
+		// Si quedan hormigas por ejecutarse llama al metodo ejecutar() de Optimizador
 		if(hormigasEspera>0)
 			this.ejecutar();
+		// Si ya no quedan hormigas por ejecutar y ya han vuelto todas, llama al metodo
+		// finalizar() de Optimizador
 		else if(hormigasEspera==0&&hormigasViaje==0)
 			this.finalizar();
 	}
 	
+	
+
 	/**
 	 * En este método se inicializan las feromonas al valor TAUZERO y la
 	 * visibilidad se inicia al valor de las distancias elevado a un cierto
@@ -193,7 +196,12 @@ public class Optimizador {
 		}
 	}
 	
+	
+	/** Genera mediante un algoritmo voraz una solucion primitiva.
+	 * 
+	 */
 	private void generarTour() {
+		int tourbasico[];
 		boolean visitadas[]= new boolean[numerodeciudades];
 		tourbasico = new int[numerodeciudades + 1];
 		feromonas = new double[numerodeciudades][numerodeciudades];
@@ -228,5 +236,27 @@ public class Optimizador {
 		mensaje.append(mejorlongitudderecorrido).append("#NN");
 
 		output.mostrarPorPantalla(mensaje.toString());
+	}
+	
+	/** Metodo que muestra el mejor recorrido
+	 * 
+	 */
+	private void mostrarMejorRuta() {
+		SalidaDeDatos output = new SalidaDeDatos();
+		StringBuilder mensaje = new StringBuilder();
+
+		mensaje.append(mejorlongitudderecorrido);
+
+		output.mostrarPorPantalla(mensaje.toString(), "#defecto");
+
+		// Limpia el buffer completo para crear un nuevo mensaje
+		// reusando el objeto salida de datos.
+		mensaje.delete(0, mensaje.length());
+
+		for (int i = 0; i < numerodeciudades + 1; i++) {
+
+			mensaje.append(mejorrecorrido[i]).append(" ");
+		}
+		output.mostrarPorPantalla(mensaje.toString(), "#defecto");
 	}
 }
