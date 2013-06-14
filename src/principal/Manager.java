@@ -2,7 +2,8 @@ package principal;
 
 import java.io.IOException;
 
-import sistema.SimpleACS;
+import sistema.Optimizador;
+
 
 /**
  * Clase que inicia la ejecución del sistema
@@ -24,12 +25,9 @@ public class Manager {
 
 		String ficheroaabrir = "eil51.tsp";
 
-		try {
-			SimpleACS main = new SimpleACS();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Optimizador sistema= new Optimizador();
+		sistema.iniciar(ficheroaabrir);
+		sistema.ejecutar();
 
 	//	main.iniciar(ficheroaabrir);
 	//	main.ejecutar();
